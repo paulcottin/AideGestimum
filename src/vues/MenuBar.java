@@ -11,6 +11,7 @@ import controleurs.ExporterCSV;
 import controleurs.Lancer;
 import controleurs.ModifierNomFichiers;
 import controleurs.Quitter;
+import interfaces.LancerAction;
 import main.Principale;
 
 
@@ -54,7 +55,7 @@ public class MenuBar extends JMenuBar implements Observer{
 		rechercheCSS = new JMenuItem("Recherche d'un CSS en fonction d'un nom de classe");
 		rechercheCSS.addActionListener(new controleurs.SearchCSS(p.getFiles()));
 		remplacerTitre = new JMenuItem("Remplacer les titres");
-		remplacerTitre.addActionListener(new Lancer(p.getTitre(), p));
+		remplacerTitre.addActionListener(new Lancer(p.getTitre(), p, Lancer.SELECTED_LINES));
 	}
 	
 	private void construct(){

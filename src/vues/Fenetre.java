@@ -20,9 +20,9 @@ public class Fenetre extends JFrame implements Observer{
 	 */
 	private static final long serialVersionUID = 1L;
 	Principale principale;
-	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, changementStyle, script;
-	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, changementStyle_l;
-	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, changementStyle_all, script_all;
+	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, changementStyle, script, creationPuce;
+	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, changementStyle_l, creationPuce_l;
+	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, changementStyle_all, script_all, creationPuce_all;
 	JButton selectAll;
 	
 	ListeFichier listeFichier;
@@ -92,6 +92,12 @@ public class Fenetre extends JFrame implements Observer{
 		script_all = new JButton("Paramétrer");
 		script_all.addActionListener(new ParametrerScript(principale.getScript()));
 		
+		creationPuce = new JLabel("Création de puces");
+		creationPuce_l = new JButton("Sélection");
+		creationPuce_l.addActionListener(new Lancer(principale.getCreationPuce(), principale, Lancer.SELECTED_LINES));
+		creationPuce_all = new JButton("Tous");
+		creationPuce_all.addActionListener(new Lancer(principale.getCreationPuce(), principale));
+		
 	}
 	
 	private void createWin(){
@@ -133,6 +139,11 @@ public class Fenetre extends JFrame implements Observer{
 		scriptP.add(script);
 		scriptP.add(script_all);
 		
+		JPanel creationPuce = new JPanel();
+		creationPuce.add(this.creationPuce);
+		creationPuce.add(creationPuce_l);
+		creationPuce.add(creationPuce_all);
+		
 		this.getContentPane().add(style);
 		this.getContentPane().add(choixFeuille);
 		this.getContentPane().add(choixPP);
@@ -141,6 +152,7 @@ public class Fenetre extends JFrame implements Observer{
 		this.getContentPane().add(coloPuces);
 		this.getContentPane().add(changerS);
 		this.getContentPane().add(scriptP);
+		this.getContentPane().add(creationPuce);
 	}
 
 	@Override

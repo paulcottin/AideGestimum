@@ -43,11 +43,11 @@ public class Lancer implements ActionListener{
 			ProgressBar bar = new ProgressBar(p);
 		}
 		else if (choix == SELECTED_LINES){
-			//Pour les test : Ne fait l'opération que sur Introduction.htm
-			ArrayList<File> f = new ArrayList<File>();
-			f.add(new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie\\gestion_analytique.htm"));
-			p.lancerAction(f);
-			p.run();
+//			//Pour les test : Ne fait l'opération que sur Introduction.htm
+//			ArrayList<File> f = new ArrayList<File>();
+//			f.add(new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie\\gestion_analytique.htm"));
+//			p.lancerAction(f);
+//			p.run();
 			@SuppressWarnings("unused")
 			ChoixFichiers cf = new ChoixFichiers(principale.getFiles(), p);
 		}

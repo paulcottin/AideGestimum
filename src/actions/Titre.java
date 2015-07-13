@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.regex.Pattern;
 
 import interfaces.LancerAction;
+import main.Principale;
 
 public class Titre extends Observable implements LancerAction {
 
@@ -36,6 +38,8 @@ public class Titre extends Observable implements LancerAction {
 		lancerActionAll();
 		running = false;
 		update();
+		
+		Principale.messageFin("Traitement des titres fini");
 	}
 
 	@Override
@@ -54,7 +58,6 @@ public class Titre extends Observable implements LancerAction {
 	public void lancerAction(ArrayList<File> files) {
 		htmlFiles.clear();
 		htmlFiles.addAll(files);
-		lancerActionAll();
 	}
 
 	@Override
@@ -72,14 +75,62 @@ public class Titre extends Observable implements LancerAction {
 		BufferedReader br = new BufferedReader(new FileReader(f));
 		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
 		String ligne = "";
-		titreBalise = "h2";
+		titreBalise = "h1";
+		boolean isbody = false;
 
 		while ((ligne = br.readLine()) != null){
-			if (ligne.matches("<p .*border-bottom:")) {
-				System.out.println(ligne);
+			if (isbody) {
+				String debB = ligne.split("<")[1];
+				String balise = (ligne.contains("<") ? debB.substring(0, ((debB.contains(" "))? debB.indexOf(" ") : debB.indexOf(">"))) : null);
+				//Si la balise ne tient pas en une ligne
+				if (balise != null && !ligne.contains("</"+balise+">")) {
+					String baliseText = ligne;
+					ligne = br.readLine();
+					while (ligne != null && !ligne.contains("</"+balise+">") && !ligne.contains("<?")){
+						baliseText += ligne;
+						ligne = br.readLine();
+					}
+					baliseText += (ligne != null) ? ligne : "";
+					if (baliseText.contains("border-bottom:"))
+						bw.write("<"+titreBalise+">"+getText(baliseText)+"</"+titreBalise+">");
+					else 
+						bw.write(baliseText);
+				}
+				//Si la balise tient en une ligne
+				else if (balise != null && ligne.contains("</"+balise+">")) {
+					if (ligne.contains("border-bottom:")) {
+						bw.write("<"+titreBalise+">"+getText(ligne)+"</"+titreBalise+">\r\n");
+					}else
+						bw.write(ligne+"\r\n");
+				}else
+					bw.write(ligne);
+			}
+			else {
+				if (ligne.contains("<body>"))
+					isbody = true;
+				else if (ligne.contains("</body>"))
+					isbody = false;
+				bw.write(ligne);
 			}
 		}
 		
+		br.close();
+		bw.close();
+
+		Principale.fileMove(tmp, f);
+		tmp.delete();
+		
+	}
+	
+	private String getText(String ligne){
+		ligne = ligne.replace("\r\n", " ");
+		Pattern p = Pattern.compile("<.*?>", Pattern.DOTALL);
+		String[] tab = ligne.split(p.pattern());
+		String s = "";
+		for (String string : tab) {
+			s += string;
+		}
+		return s;
 	}
 
 	private void getTitre(File f){
