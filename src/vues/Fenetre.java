@@ -20,9 +20,12 @@ public class Fenetre extends JFrame implements Observer{
 	 */
 	private static final long serialVersionUID = 1L;
 	Principale principale;
-	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, changementStyle, script, creationPuce, creerLien;
-	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, changementStyle_l, creationPuce_l, creerLien_l;
-	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, changementStyle_all, script_all, creationPuce_all, creerLien_all;
+	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, 
+		changementStyle, script, creationPuce, creerLien, supprimerTitre;
+	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, 
+		changementStyle_l, creationPuce_l, creerLien_l, supprimerTitre_l;
+	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, 
+		changementStyle_all, script_all, creationPuce_all, creerLien_all, supprimerTitre_all;
 	JButton selectAll;
 	
 	ListeFichier listeFichier;
@@ -103,6 +106,12 @@ public class Fenetre extends JFrame implements Observer{
 		creerLien_l.addActionListener(new Lancer(principale.getLien(), principale, Lancer.SELECTED_LINES));
 		creerLien_all = new JButton("Tous");
 		creerLien_all.addActionListener(new Lancer(principale.getLien(), principale));		
+		
+		supprimerTitre = new JLabel(principale.getSupprimerTitre().getIntitule());
+		supprimerTitre_l = new JButton("Sélection");
+		supprimerTitre_l.addActionListener(new Lancer(principale.getSupprimerTitre(), principale, Lancer.SELECTED_LINES));
+		supprimerTitre_all = new JButton("Tous");
+		supprimerTitre_all.addActionListener(new Lancer(principale.getSupprimerTitre(), principale));
 	}
 	
 	private void createWin(){
@@ -154,6 +163,11 @@ public class Fenetre extends JFrame implements Observer{
 		creerLien.add(creerLien_l);
 		creerLien.add(creerLien_all);
 		
+		JPanel suppTitre = new JPanel();
+		suppTitre.add(supprimerTitre);
+		suppTitre.add(supprimerTitre_l);
+		suppTitre.add(supprimerTitre_all);
+		
 		this.getContentPane().add(style);
 		this.getContentPane().add(choixFeuille);
 		this.getContentPane().add(choixPP);
@@ -164,6 +178,7 @@ public class Fenetre extends JFrame implements Observer{
 		this.getContentPane().add(scriptP);
 		this.getContentPane().add(creationPuce);
 		this.getContentPane().add(creerLien);
+		this.getContentPane().add(suppTitre);
 	}
 
 	@Override

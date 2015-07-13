@@ -23,6 +23,7 @@ import actions.CreationPuce;
 import actions.Lien;
 import actions.Style;
 import actions.SupprimerBalise;
+import actions.SupprimerTitre;
 import actions.Titre;
 import vues.Fenetre;
 
@@ -41,6 +42,7 @@ public class Principale extends Observable {
 	private Titre titre;
 	private CreationPuce creationPuce;
 	private Lien lien;
+	private SupprimerTitre supprimerTitre;
 
 	File topics;
 	ArrayList<File> files;
@@ -63,6 +65,7 @@ public class Principale extends Observable {
 		titre = new Titre(files);
 		creationPuce = new CreationPuce(files);
 		lien = new Lien(files);
+		supprimerTitre = new SupprimerTitre(files);
 
 		setChanged();
 		notifyObservers();
@@ -327,5 +330,13 @@ public class Principale extends Observable {
 
 	public void setLien(Lien lien) {
 		this.lien = lien;
+	}
+
+	public SupprimerTitre getSupprimerTitre() {
+		return supprimerTitre;
+	}
+
+	public void setSupprimerTitre(SupprimerTitre supprimerTitre) {
+		this.supprimerTitre = supprimerTitre;
 	}
 }

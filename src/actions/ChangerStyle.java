@@ -20,6 +20,7 @@ public class ChangerStyle extends Observable implements LancerAction {
 	private ArrayList<File> htmlFiles, cssFiles;
 	private boolean running;
 	private String oldStyle, newStyle, oldStylePath, newStylePath;
+	private ArrayList<String> baliseASauver;
 
 
 	public ChangerStyle(ArrayList<File> files) {
@@ -34,6 +35,8 @@ public class ChangerStyle extends Observable implements LancerAction {
 		this.running = false;
 		this.oldStyle = null;
 		this.newStyle = null;
+		this.baliseASauver = new ArrayList<String>();
+		initBaliseASauver();
 	}
 
 	@Override
@@ -139,8 +142,8 @@ public class ChangerStyle extends Observable implements LancerAction {
 		String ligne = "";
 		String baliseP = "";
 		while ((ligne = br.readLine()) != null){
-			if (ligne.contains("class=\""+oldStyle+"\"") || (oldStyle.equals("p") && ligne.contains("<p ") && !ligne.contains("<img")) || 
-					(oldStyle.equals("p") && ligne.contains("<p><span ") && !ligne.contains("<img "))) {
+			if (ligne.contains("class=\""+oldStyle+"\"") || (oldStyle.equals("p") && ligne.contains("<p ") && !isSafeBaliseInLine(ligne)) || 
+					(oldStyle.equals("p") && ligne.contains("<p><span ") && !isSafeBaliseInLine(ligne))) {
 				
 				if (ligne.contains("</p>")) 
 					bw.write("<"+balise+">"+getText(ligne)+"</"+balise+">");
@@ -303,6 +306,29 @@ public class ChangerStyle extends Observable implements LancerAction {
 		if (style.equals("p"))
 			return true;
 		else return false;
+	}
+	
+	private void initBaliseASauver(){
+		baliseASauver.add("<img");
+		baliseASauver.add("<a");
+		baliseASauver.add("<ul");
+		baliseASauver.add("<li");
+		baliseASauver.add("h1");
+		baliseASauver.add("H1");
+		baliseASauver.add("h2");
+		baliseASauver.add("H2");
+		baliseASauver.add("h3");
+		baliseASauver.add("H3");
+		baliseASauver.add("h4");
+		baliseASauver.add("H4");
+	}
+	
+	private boolean isSafeBaliseInLine(String ligne){
+		for (String string : baliseASauver) {
+			if (ligne.contains(string))
+				return true;
+		}
+		return false;
 	}
 	
 	private void update(){
