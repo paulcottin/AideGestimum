@@ -47,6 +47,7 @@ public class Titre extends Observable implements LancerAction {
 		parametrer();
 		for (File file : htmlFiles) {
 			try {
+				System.out.println(file.getName());
 				applyStyle(file);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -57,7 +58,10 @@ public class Titre extends Observable implements LancerAction {
 	@Override
 	public void lancerAction(ArrayList<File> files) {
 		htmlFiles.clear();
-		htmlFiles.addAll(files);
+		for (File file : files) {
+			if (file.getAbsolutePath().endsWith(".htm"))
+				htmlFiles.add(file);
+		}
 	}
 
 	@Override
@@ -79,9 +83,8 @@ public class Titre extends Observable implements LancerAction {
 		boolean isbody = false;
 
 		while ((ligne = br.readLine()) != null){
-			if (isbody) {
-				String debB = ligne.split("<")[1];
-				String balise = (ligne.contains("<") ? debB.substring(0, ((debB.contains(" "))? debB.indexOf(" ") : debB.indexOf(">"))) : null);
+			if (isbody && ligne.contains("<") && !ligne.contains("<?")) {
+				String balise = "p";
 				//Si la balise ne tient pas en une ligne
 				if (balise != null && !ligne.contains("</"+balise+">")) {
 					String baliseText = ligne;

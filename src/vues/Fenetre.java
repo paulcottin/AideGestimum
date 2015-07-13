@@ -20,9 +20,9 @@ public class Fenetre extends JFrame implements Observer{
 	 */
 	private static final long serialVersionUID = 1L;
 	Principale principale;
-	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, changementStyle, script, creationPuce;
-	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, changementStyle_l, creationPuce_l;
-	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, changementStyle_all, script_all, creationPuce_all;
+	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, changementStyle, script, creationPuce, creerLien;
+	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, changementStyle_l, creationPuce_l, creerLien_l;
+	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, changementStyle_all, script_all, creationPuce_all, creerLien_all;
 	JButton selectAll;
 	
 	ListeFichier listeFichier;
@@ -43,7 +43,7 @@ public class Fenetre extends JFrame implements Observer{
 	}
 	
 	private void initWin(){
-		this.setSize(500, 400);
+		this.setSize(500, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setJMenuBar(new vues.MenuBar(principale));
@@ -98,6 +98,11 @@ public class Fenetre extends JFrame implements Observer{
 		creationPuce_all = new JButton("Tous");
 		creationPuce_all.addActionListener(new Lancer(principale.getCreationPuce(), principale));
 		
+		creerLien = new JLabel("Créer les liens");
+		creerLien_l = new JButton("Sélection");
+		creerLien_l.addActionListener(new Lancer(principale.getLien(), principale, Lancer.SELECTED_LINES));
+		creerLien_all = new JButton("Tous");
+		creerLien_all.addActionListener(new Lancer(principale.getLien(), principale));		
 	}
 	
 	private void createWin(){
@@ -144,6 +149,11 @@ public class Fenetre extends JFrame implements Observer{
 		creationPuce.add(creationPuce_l);
 		creationPuce.add(creationPuce_all);
 		
+		JPanel creerLien = new JPanel();
+		creerLien.add(this.creerLien);
+		creerLien.add(creerLien_l);
+		creerLien.add(creerLien_all);
+		
 		this.getContentPane().add(style);
 		this.getContentPane().add(choixFeuille);
 		this.getContentPane().add(choixPP);
@@ -153,6 +163,7 @@ public class Fenetre extends JFrame implements Observer{
 		this.getContentPane().add(changerS);
 		this.getContentPane().add(scriptP);
 		this.getContentPane().add(creationPuce);
+		this.getContentPane().add(creerLien);
 	}
 
 	@Override

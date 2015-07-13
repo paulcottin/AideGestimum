@@ -20,6 +20,7 @@ import actions.ChoixFeuilleStyle;
 import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
 import actions.CreationPuce;
+import actions.Lien;
 import actions.Style;
 import actions.SupprimerBalise;
 import actions.Titre;
@@ -39,6 +40,7 @@ public class Principale extends Observable {
 	private Script script;
 	private Titre titre;
 	private CreationPuce creationPuce;
+	private Lien lien;
 
 	File topics;
 	ArrayList<File> files;
@@ -46,8 +48,8 @@ public class Principale extends Observable {
 
 	public Principale(){
 		files = new ArrayList<File>();
-//		topics = new File(getTopicsPath());
-		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
+		topics = new File(getTopicsPath());
+//		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
 		listerRepertoire(topics);
 
 		style = new Style(files);
@@ -60,6 +62,7 @@ public class Principale extends Observable {
 		script = new Script(files);
 		titre = new Titre(files);
 		creationPuce = new CreationPuce(files);
+		lien = new Lien(files);
 
 		setChanged();
 		notifyObservers();
@@ -316,5 +319,13 @@ public class Principale extends Observable {
 
 	public void setCreationPuce(CreationPuce creationPuce) {
 		this.creationPuce = creationPuce;
+	}
+
+	public Lien getLien() {
+		return lien;
+	}
+
+	public void setLien(Lien lien) {
+		this.lien = lien;
 	}
 }
