@@ -10,8 +10,12 @@ import actions.ChangerStyle;
 import actions.ChoixFeuilleStyle;
 import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
+import actions.CreationPuce;
+import actions.Lien;
 import actions.Style;
 import actions.SupprimerBalise;
+import actions.SupprimerTitre;
+import actions.Titre;
 import interfaces.LancerAction;
 import interfaces.NeedSelectionFichiers;
 import vues.ChoixFichiers;
@@ -110,6 +114,18 @@ public class Script extends Observable implements NeedSelectionFichiers{
 				break;
 			case "Supprimer une balise":
 				actions.add(new SupprimerBalise(fileEtCssEtHtt));
+				break;
+			case "Remplacer les titres":
+				actions.add(new Titre(fileEtCssEtHtt));
+				break;
+			case "Création des puces":
+				actions.add(new CreationPuce(fileEtCssEtHtt));
+				break;
+			case "Création des liens":
+				actions.add(new Lien(fileEtCssEtHtt));
+				break;
+			case "Supprimer les titres":
+				actions.add(new SupprimerTitre(fileEtCssEtHtt));
 				break;
 			default:
 				System.err.println("Erreur Script, choix inconnu");

@@ -45,7 +45,7 @@ public class ScriptChooser extends JFrame {
 	
 	private void init(){
 		String[] act = {"Choix page principale", "Changement d'une classe CSS", "Choix d'une feuille de style", "Coloration des puces", 
-				"Application d'un style à un mot", "Supprimer une balise"
+				"Application d'un style à un mot", "Supprimer une balise", "Remplacer les titres", "Création des puces", "Création des liens", "Supprimer les titres"
 		};
 		actionsModel = new DefaultListModel<String>();
 		for (String string : act) {
