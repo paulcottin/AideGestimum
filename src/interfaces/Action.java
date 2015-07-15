@@ -110,9 +110,7 @@ public abstract class Action extends Observable implements LancerAction{
 
 
 	@Override
-	public void parametrer() {
-		
-	}
+	public abstract void parametrer();
 	
 	@Override
 	public boolean isRunning() {
