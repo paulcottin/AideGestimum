@@ -12,65 +12,23 @@ import java.util.Observable;
 
 import javax.swing.JOptionPane;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import exceptions.FichierNonTrouve;
+import interfaces.Action;
 import interfaces.LancerAction;
 import main.Principale;
 
-public class ChoixFeuilleStyle extends Observable implements LancerAction{
+public class ChoixFeuilleStyle extends Action {
 
-	private ArrayList<File> cssFiles, htmlFiles;
 	private String style, stylePath;
-	private boolean running;
-
 	public ChoixFeuilleStyle(ArrayList<File> files){
-		this.cssFiles = new ArrayList<File>();
-		this.htmlFiles = new ArrayList<File>();
-		this.running = false;
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".css"))
-				cssFiles.add(new File(Principale.FILE_BASE.toURI().relativize(file.toURI()).getPath()));
-			else if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-		}
-
+		super(files);
 	}
 	
-	public void run() {
-		if (cssFiles.size() > 0) {
-			lancerActionAll();
-		}else
-			Principale.messageFin("Il faut définir des feuilles de styles CSS");
-	}
-
-	@Override
-	public void lancerActionAll() {
-		parametrer();
-		if (style != null){
-			applyStyle();
-			Principale.messageFin("Feuilles de styles modifiées ("+style+")");
-		}else
-			Principale.messageFin("Il faut renseigner une feuille de style");
-		running = false;
-		update();
-	}
 	
-	@Override
-	public void fichiersSelectionnes(ArrayList<File> files) {
-		lancerAction(files);
-	}
-
-	public void lancerAction(ArrayList<File> files){
-		this.htmlFiles.clear();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-		}
-	}
-	
-	@Override
-	public void parametrer(){
-		getStyle();
-	}
 
 	private void getStyle(){
 		String[] styles = new String[cssFiles.size()];
@@ -89,21 +47,6 @@ public class ChoixFeuilleStyle extends Observable implements LancerAction{
 			tmp.add(string);
 		}
 		stylePath = cssFiles.get(tmp.indexOf(style)).getPath();
-	}
-
-	private void applyStyle(){
-		this.running = true;
-		update();
-		for (File file : htmlFiles) {
-			try {
-				applyStyleHelper(file);
-			} catch (FileNotFoundException fnf){
-				System.out.println("fichier non trouvé");
-				new FichierNonTrouve(file.getName());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	private void applyStyleHelper(File f) throws IOException{
@@ -131,23 +74,22 @@ public class ChoixFeuilleStyle extends Observable implements LancerAction{
 		tmp.delete();
 	}
 	
-	private void update(){
-		setChanged();
-		notifyObservers();
+	@Override
+	protected Document applyStyle(Document doc) throws IOException {
+		// TODO Auto-generated method stub
+			Elements links = doc.select("a[href]");
+
+			for (Element element : links) {
+				element.addClass("Lien");
+			}
+			return doc;
 	}
 
-	@Override
-	public boolean isRunning() {
-		return running;
-	}
+
 
 	@Override
-	public void setRunning(boolean b) {
-		this.running = b;
-	}
-
-	@Override
-	public void onDispose() {
-		// Ne rien faire
+	public void parametrer() {
+		// TODO Auto-generated method stub
+		getStyle();
 	}
 }

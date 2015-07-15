@@ -47,7 +47,6 @@ public class Titre extends Observable implements LancerAction {
 		parametrer();
 		for (File file : htmlFiles) {
 			try {
-				System.out.println(file.getName());
 				applyStyle(file);
 			} catch (IOException e) {
 				e.printStackTrace();
