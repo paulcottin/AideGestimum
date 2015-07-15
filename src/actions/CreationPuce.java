@@ -83,17 +83,17 @@ public class CreationPuce extends Observable implements LancerAction {
 				}
 				baliseText += (ligne != null) ? ligne : "";
 
-				if (baliseText.contains(">- ")) {
+				if (baliseText.contains(">- ") || baliseText.contains(">Ø ")) {
 					bw.write("<ul>\r\n");
 					bw.write("<li>"+baliseText.substring(baliseText.indexOf(">- ")+">- ".length())+"</li>\r\n");
 				}	else 
 					bw.write(baliseText+"\r\n");
 			}
 			//Si la balise tient en une ligne
-			else if (ligne.contains(">- ")) {
+			else if (ligne.contains(">- ") || ligne.contains(">Ø ")) {
 				bw.write("<ul>\r\n");
 				bw.write("<li>"+ligne.substring(ligne.indexOf(">- ")+">- ".length())+"</li>\r\n");
-				while ((ligne = br.readLine()).contains(">- ")) {
+				while ((ligne = br.readLine()).contains(">- ") || (ligne = br.readLine()).contains(">Ø ")) {
 					bw.write("<li>"+ligne.substring(ligne.indexOf(">- ")+">- ".length())+"</li>\r\n");
 				}
 				bw.write("</ul>\r\n");
