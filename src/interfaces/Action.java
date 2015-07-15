@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import main.Principale;
 
 public abstract class Action extends Observable implements LancerAction{
@@ -76,11 +80,17 @@ public abstract class Action extends Observable implements LancerAction{
 		File tmp = new File("tmp");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-		String ligne = "";
+		String ligne = "", txt = "";
 		
 		while ((ligne = br.readLine()) != null){
-			applyStyle(br, bw, ligne);
+			txt += ligne+"\r\n";
 		}
+		
+		Document doc = Jsoup.parse(txt);
+		
+		doc = applyStyle(doc);
+		
+		bw.write(doc.html());
 		
 		br.close();
 		bw.close();
@@ -89,7 +99,7 @@ public abstract class Action extends Observable implements LancerAction{
 		tmp.delete();
 	}
 	
-	protected abstract void applyStyle(BufferedReader br, BufferedWriter bw, String ligne) throws IOException;
+	protected abstract Document applyStyle(Document doc) throws IOException;
 
 
 	@Override

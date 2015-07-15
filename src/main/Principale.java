@@ -21,6 +21,7 @@ import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
 import actions.CreationPuce;
 import actions.Lien;
+import actions.Lien;
 import actions.Style;
 import actions.SupprimerBalise;
 import actions.SupprimerTitre;
@@ -324,6 +325,14 @@ public class Principale extends Observable {
 		this.creationPuce = creationPuce;
 	}
 
+//	public Lien getLien() {
+//		return lien;
+//	}
+//
+//	public void setLien(Lien lien) {
+//		this.lien = lien;
+//	}
+	
 	public Lien getLien() {
 		return lien;
 	}

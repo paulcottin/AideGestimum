@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jsoup.nodes.Document;
+
 import interfaces.Action;
 
 public class SupprimerTitre extends Action {
@@ -21,24 +23,24 @@ public class SupprimerTitre extends Action {
 		cpt = 5;
 	}
 
-	@Override
-	protected void applyStyle(BufferedReader br, BufferedWriter bw, String ligne) throws IOException {
-		if (ligne.contains("<body"))
-			isBody = true;
-		else if (ligne.contains("</body>"))
-			isBody = false;
-		
-		if (isBody && !ligne.contains("<h1") && cpt > 0) {
-			cpt--;
-			bw.write(ligne+"\r\n");
-		}
-		else if (isBody && ligne.contains("<h1") && cpt > 0) {
-			bw.write(getH1(ligne)+"\r\n");
-		}
-		else
-			bw.write(ligne+"\r\n");
-		
-	}
+//	@Override
+//	protected void applyStyle(BufferedReader br, BufferedWriter bw, String ligne) throws IOException {
+//		if (ligne.contains("<body"))
+//			isBody = true;
+//		else if (ligne.contains("</body>"))
+//			isBody = false;
+//		
+//		if (isBody && !ligne.contains("<h1") && cpt > 0) {
+//			cpt--;
+//			bw.write(ligne+"\r\n");
+//		}
+//		else if (isBody && ligne.contains("<h1") && cpt > 0) {
+//			bw.write(getH1(ligne)+"\r\n");
+//		}
+//		else
+//			bw.write(ligne+"\r\n");
+//		
+//	}
 	
 	private String getH1(String ligne){
 		int deb = ligne.indexOf("<h1") ;
@@ -48,4 +50,10 @@ public class SupprimerTitre extends Action {
 		else
 			return ligne.substring(fin);
 	}
+
+@Override
+protected Document applyStyle(Document doc) throws IOException {
+	// TODO Auto-generated method stub
+	return null;
+}
 }
