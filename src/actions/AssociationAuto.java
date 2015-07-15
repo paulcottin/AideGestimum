@@ -8,77 +8,41 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
-import java.util.Observable;
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import exceptions.FichierUtilise;
-import interfaces.LancerAction;
-import interfaces.LongTask;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import interfaces.Action;
 import main.Principale;
 
-public class AssociationAuto extends Observable implements LancerAction, LongTask, Runnable{
+public class AssociationAuto extends Action {
 
 	File sourceFile;
 	ChoixPagePrincipale choixPP;
 	ArrayList<String> paths, PP, ppPath;
-	ArrayList<File> ppFiles;
-	boolean running;
 
 	public AssociationAuto(ArrayList<File> files) {
+		super(files);
 		choixPP = new ChoixPagePrincipale(files);
 		this.PP = new ArrayList<String>();
 		this.paths = new ArrayList<String>();
 		this.ppPath = new ArrayList<String>();
-		this.ppFiles = new ArrayList<File>();
-		this.running = false;
-
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htt"))
-				ppFiles.add(file);
-		}
+		messageFin = "Application automatique effectuée avec succès";
+		intitule = "Association automatique";
 	}
 
-	@Override
-	public void run() {
-		lancerActionAll();	
-	}
-
-	@Override
-	public void lancerActionAll() {
-		getSourceFile();
-		if (sourceFile != null) {
-			try {
-				checkEncodage();
-				getPathAndPP();
-				if (displayPP()) {
-					applyStyle();
-					Principale.messageFin("Application automatique effectuée avec succès");
-				}
-			} catch (FileSystemException e) {
-				new FichierUtilise(sourceFile.getName());
-			}
-		}
-		else
-			Principale.messageFin("Veuillez renseigner un fichier");
-		this.running = false;
-		update();
-	}
-
-	@Override
-	public void lancerAction(ArrayList<File> files) {
-		
-	}
-	
-	@Override
-	public void fichiersSelectionnes(ArrayList<File> files) {
-		lancerAction(files);
-	}
-	
 	@Override
 	public void parametrer(){
-		
+		getSourceFile();
+		try {
+			checkEncodage();
+		} catch (FileSystemException e) {
+			e.printStackTrace();
+		}
+		getPathAndPP();
+		displayPP();
 	}
 
 	private void getSourceFile() {
@@ -141,23 +105,24 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 			Principale.messageFin("Il faut d'abord définir une page principale !");
 			return false;
 		}
-			
+
 	}
 
-	private void applyStyle(){
-		this.running = true;
-		update();
+	@Override
+	protected Document applyStyle(Document doc) throws IOException {
 		for (int i = 0; i < PP.size(); i++) {
 			if (!PP.get(i).equals(0)) {
-				//on fixe la pp
+				//on crée le doc de la pp
+				Document d = Jsoup.parse(new File(PP.get(i)), "utf-8");
 				choixPP.setPagePath(PP.get(i));
 				//On fixe les fichiers sur lesquels on applique le traitement
 				choixPP.getHtmlFiles().clear();
 				choixPP.getHtmlFiles().add(new File(paths.get(i)));
 				//On applique
-				choixPP.applyPagePrincipale();
+//				choixPP.
 			}
 		}
+		return null;
 	}
 
 	private void updatePath(String pageP, String name){
@@ -241,25 +206,5 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 		} catch (FileSystemException fse){
 			throw fse;
 		}
-	}
-
-	private void update(){
-		setChanged();
-		notifyObservers();
-	}
-
-	@Override
-	public boolean isRunning() {
-		return running;
-	}
-
-	@Override
-	public void setRunning(boolean b) {
-		this.running = b;
-	}
-
-	@Override
-	public void onDispose() {
-		//Ne rien faire
 	}
 }

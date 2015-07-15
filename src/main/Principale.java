@@ -21,7 +21,6 @@ import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
 import actions.CreationPuce;
 import actions.Lien;
-import actions.Lien;
 import actions.Style;
 import actions.SupprimerBalise;
 import actions.SupprimerTitre;

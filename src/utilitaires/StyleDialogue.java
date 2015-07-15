@@ -16,8 +16,11 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import actions.Style;
 
 public class StyleDialogue extends JDialog {
 
@@ -33,8 +36,10 @@ public class StyleDialogue extends JDialog {
 	@SuppressWarnings("unused")
 	private JComboBox<String> styles;
 	private ArrayList<File> cssFiles;
+	private String cssFilePath;
+	private Style style_class;
 
-	public StyleDialogue(JFrame parent, String title, boolean modal, ArrayList<File> files){
+	public StyleDialogue(JFrame parent, String title, boolean modal, ArrayList<File> files, Style style){
 		super(parent, title, modal);
 		this.cssFiles = new ArrayList<File>();
 		for (File file : files) {
@@ -42,18 +47,20 @@ public class StyleDialogue extends JDialog {
 				cssFiles.add(file);
 			}
 		}
+		this.style_class = style;
 		this.setSize(550, 270);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		getCSSFile();
 		this.initComponent();
 	}
-	
+
 	public StyleDialogueInfo showDialog(){
-	    this.sendData = false;
-	    this.setVisible(true);      
-	    return this.Info;      
-	  }
+		this.sendData = false;
+		this.setVisible(true);      
+		return this.Info;      
+	}
 
 	private void initComponent(){
 		//Le mot
@@ -114,24 +121,46 @@ public class StyleDialogue extends JDialog {
 	private ArrayList<String> getCSSclasses(){
 		ArrayList<String> reponse = new ArrayList<String>();
 
-		for (File file : cssFiles) {
 
-			try {
-				BufferedReader br = new BufferedReader(new FileReader(file));
+		File file = new File(cssFilePath);
 
-				String ligne = "";
-				while((ligne = br.readLine()) != null){
-					if (ligne.contains("span.")) {
-						reponse.add(ligne.substring(5, ligne.indexOf("{")-1));
-					}
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			String ligne = "";
+			while((ligne = br.readLine()) != null){
+				if (ligne.startsWith("span.")) {
+					int deb = ligne.indexOf("span.") + "span.".length();
+					int fin = ligne.indexOf("{");
+					reponse.add(ligne.substring(deb, fin));
 				}
-				
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+
 		}
 		return reponse;
+	}
+
+	private void getCSSFile(){
+		cssFilePath = "";
+		String[] cssFiles = new String[this.cssFiles.size()];
+		for (int i = 0; i < this.cssFiles.size(); i++) {
+			cssFiles[i] = this.cssFiles.get(i).getName();
+		}
+
+		cssFilePath =	(String) JOptionPane.showInputDialog(null, 
+				"Choisir la feuille de style",
+				"Paramétrage",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				cssFiles, cssFiles[0]);
+		
+		for (File file: this.cssFiles) {
+			if (file.getName().equals(cssFilePath))
+				cssFilePath = file.getAbsolutePath();
+		}
 	}
 
 	public StyleDialogueInfo getInfo() {
@@ -140,6 +169,14 @@ public class StyleDialogue extends JDialog {
 
 	public void setInfo(StyleDialogueInfo info) {
 		Info = info;
+	}
+
+	public String getCssFilePath() {
+		return cssFilePath;
+	}
+
+	public void setCssFilePath(String cssFilePath) {
+		this.cssFilePath = cssFilePath;
 	}
 
 }

@@ -1,171 +1,58 @@
 package actions;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.regex.Pattern;
-
 import javax.swing.JOptionPane;
 
-import interfaces.LancerAction;
-import main.Principale;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-public class ChangerStyle extends Observable implements LancerAction {
+import interfaces.Action;
 
-	private ArrayList<File> htmlFiles, cssFiles;
-	private boolean running;
+public class ChangerStyle extends Action {
+
 	private String oldStyle, newStyle, oldStylePath, newStylePath;
-	private ArrayList<String> baliseASauver;
 
 
 	public ChangerStyle(ArrayList<File> files) {
-		this.htmlFiles = new ArrayList<File>();
-		this.cssFiles = new ArrayList<File>();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-			else if (file.getAbsolutePath().endsWith(".css"))
-				cssFiles.add(file);
-		}
-		this.running = false;
+		super(files);
 		this.oldStyle = null;
 		this.newStyle = null;
-		this.baliseASauver = new ArrayList<String>();
-		initBaliseASauver();
-	}
-
-	@Override
-	public void run() {
-		if (cssFiles.size() > 0) {
-			lancerActionAll();
-		}else
-			Principale.messageFin("Il faut définir des feuilles de styles CSS");
-	}
-
-	@Override
-	public void lancerActionAll() {
-		parametrer();
-		if (oldStyle != null && newStyle != null) {
-			running = true;
-			update();
-			for (File file : htmlFiles) {
-				try {
-					if (isBalise(newStyle))
-						changeBalise(file);
-					else
-						changeStyle(file);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			running = false;
-			update();
-		}else
-			Principale.messageFin("Il faut renseigner les champs de nouveau ET d'ancien style");
-		
-		Principale.messageFin("Les styles ont bien été modifiés");
-	}
-
-	@Override
-	public void lancerAction(ArrayList<File> files) {
-		htmlFiles.clear();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-		}
-	}
-	
-	@Override
-	public void fichiersSelectionnes(ArrayList<File> files) {
-		lancerAction(files);
+		intitule = "Changer d'un style à un autre";
+		messageFin = "Changement de style effectué";
 	}
 	
 	@Override
 	public void parametrer(){
 		correspondaceStyles();
 	}
-
-	/**
-	 * Si le nouveau style est une classe CSS définie par l'utilisateur, on remplace la ligne de texte avec toutes ses balises par 
-	 * <p class="la nouvelle classe"> le texte </p> de façon à nettoyer un peu le document
-	 * @param f : le fichier sur lequel on applique le traitement
-	 * @throws IOException
-	 */
-	private void changeStyle(File f) throws IOException{
-		File tmp = new File("temp");
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-
-		String ligne = "";
-		String baliseP = "";
-		while ((ligne = br.readLine()) != null){
-			if (ligne.contains("class=\""+oldStyle+"\"")) {
-				if (ligne.contains("</p>")) 
-					bw.write("<p class=\""+newStyle+"\">"+getText(ligne)+"</p>");
-				else {
-					baliseP = ligne;
-					while (!(ligne = br.readLine()).contains("</p>")){
-						baliseP += ligne;
-					}
-					baliseP += ligne;
-					bw.write("<p class=\""+newStyle+"\">"+getText(baliseP)+"</p>");
-				}
-			}
-			else
-				bw.write(ligne+"\r\n");
-		}
-
-		br.close();
-		bw.close();
-
-		Principale.fileMove(tmp, f);
-		tmp.delete();
-	}
 	
-	/**
-	 * Si le nouveau style se traduit simplement par une balise (p, h1, h2,...), on remplace la ligne avec toutes ses balises par
-	 * <ma balise> mon texte </ma balise> pour nettoyer un peu le document
-	 * @param f : Fichier auquel on applique le traitement
-	 * @throws IOException
-	 */
-	private void changeBalise(File f) throws IOException {
-		String balise = newStyle;
-		File tmp = new File("temp");
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-
-		String ligne = "";
-		String baliseP = "";
-		while ((ligne = br.readLine()) != null){
-			if (ligne.contains("class=\""+oldStyle+"\"") || (oldStyle.equals("p") && ligne.contains("<p ") && !isSafeBaliseInLine(ligne)) || 
-					(oldStyle.equals("p") && ligne.contains("<p><span ") && !isSafeBaliseInLine(ligne))) {
-				
-				if (ligne.contains("</p>")) 
-					bw.write("<"+balise+">"+getText(ligne)+"</"+balise+">");
-				else {
-					baliseP = ligne;
-					while (!(ligne = br.readLine()).contains("</p>")){
-						baliseP += ligne;
+	@Override
+	protected Document applyStyle(Document doc) throws IOException {			
+			if (isBalise(oldStyle)) {
+				Elements es = doc.select(oldStyle);
+				if (isBalise(newStyle)) {
+					for (Element element : es) {
+						element.tagName(newStyle);
+						if (isCleannable(element))
+							element.text(element.text());
 					}
-					baliseP += ligne;
-					System.out.println("texte : "+getText(baliseP));
-					bw.write("<"+balise+">"+getText(baliseP)+"</"+balise+">");
-				}
+				}else
+					for (Element element : es) {
+						for (String s : element.classNames()) {
+							element.removeClass(s);
+						}
+						element.addClass(newStyle);
+						if (isCleannable(element))
+							element.text(element.text());
+					}
 			}
-			else
-				bw.write(ligne+"\r\n");
-		}
-
-		br.close();
-		bw.close();
-
-		Principale.fileMove(tmp, f);
-		tmp.delete();
+			
+		return doc;
 	}
 
 	/**
@@ -218,23 +105,6 @@ public class ChangerStyle extends Observable implements LancerAction {
 				styles, styles[0]);
 		
 		newStyle = getCSSBalise(newStyle);
-	}
-	
-	/**
-	 * Récupère le texte brut présent dans une ligne du document
-	 * Mise à part des balises d'image et de lien
-	 * @param ligne
-	 * @return
-	 */
-	private String getText(String ligne){
-		ligne = ligne.replace("\r\n", " ");
-		Pattern p = Pattern.compile("<.*?>", Pattern.DOTALL);
-		String[] tab = ligne.split(p.pattern());
-		String s = "";
-		for (String string : tab) {
-			s += string;
-		}
-		return s;
 	}
 	
 	/**
@@ -307,49 +177,6 @@ public class ChangerStyle extends Observable implements LancerAction {
 			return true;
 		else return false;
 	}
-	
-	private void initBaliseASauver(){
-		baliseASauver.add("<img");
-		baliseASauver.add("<a");
-		baliseASauver.add("<ul");
-		baliseASauver.add("<li");
-		baliseASauver.add("h1");
-		baliseASauver.add("H1");
-		baliseASauver.add("h2");
-		baliseASauver.add("H2");
-		baliseASauver.add("h3");
-		baliseASauver.add("H3");
-		baliseASauver.add("h4");
-		baliseASauver.add("H4");
-	}
-	
-	private boolean isSafeBaliseInLine(String ligne){
-		for (String string : baliseASauver) {
-			if (ligne.contains(string))
-				return true;
-		}
-		return false;
-	}
-	
-	private void update(){
-		setChanged();
-		notifyObservers();
-	}
-
-	@Override
-	public boolean isRunning() {
-		return running;
-	}
-
-	@Override
-	public void setRunning(boolean b) {
-		this.running = b;
-	}
-
-	@Override
-	public void onDispose() {
-		// Ne rien faire
-	}
 
 	public String getOldStyle() {
 		return oldStyle;
@@ -382,5 +209,4 @@ public class ChangerStyle extends Observable implements LancerAction {
 	public void setNewStylePath(String newStylePath) {
 		this.newStylePath = newStylePath;
 	}
-
 }

@@ -17,25 +17,28 @@ import main.Principale;
 
 public abstract class Action extends Observable implements LancerAction{
 
-	protected ArrayList<File> htmlFiles, cssFiles, ppfiles;
+	protected ArrayList<File> htmlFiles, cssFiles, ppFiles;
 	protected boolean running;
 	protected String messageFin;
 	protected String intitule;
+	private ArrayList<String> baliseASauver;
 	
 	public Action(ArrayList<File> files) {
 		htmlFiles = new ArrayList<File>();
 		cssFiles = new ArrayList<File>();
-		ppfiles = new ArrayList<File>();
+		ppFiles = new ArrayList<File>();
 		for (File file : files) {
 			if (file.getAbsolutePath().endsWith(".htm"))
 				htmlFiles.add(file);
 			else if (file.getAbsolutePath().endsWith(".css"))
 				cssFiles.add(file);
 			else if (file.getAbsolutePath().endsWith(".htt"))
-				ppfiles.add(file);
+				ppFiles.add(file);
 		}
 		
 		this.running = false;
+		baliseASauver = new ArrayList<String>();
+		initBaliseASauver();
 	}
 
 
@@ -56,7 +59,7 @@ public abstract class Action extends Observable implements LancerAction{
 			else if (file.getAbsolutePath().endsWith(".css"))
 				cssFiles.add(file);
 			else if (file.getAbsolutePath().endsWith(".htt"))
-				ppfiles.add(file);
+				ppFiles.add(file);
 		}
 	}
 
@@ -90,7 +93,12 @@ public abstract class Action extends Observable implements LancerAction{
 		
 		doc = applyStyle(doc);
 		
-		bw.write(doc.html());
+		String html = doc.html();
+
+		html = html.replace("<!--?", "<?");
+		html = html.replace("?-->", "?>");
+		
+		bw.write(html);
 		
 		br.close();
 		bw.close();
@@ -111,6 +119,30 @@ public abstract class Action extends Observable implements LancerAction{
 
 	@Override
 	public abstract void parametrer();
+	
+	protected boolean isCleannable(Element element){
+		boolean clean = true;
+		for (Element e : element.getAllElements()) {
+			if (baliseASauver.contains(e.tag().toString()) && !e.equals(element))
+				clean = false;
+		}
+		return clean;
+	}
+	
+		private void initBaliseASauver(){
+			baliseASauver.add("img");
+			baliseASauver.add("a");
+			baliseASauver.add("ul");
+			baliseASauver.add("li");
+			baliseASauver.add("h1");
+			baliseASauver.add("H1");
+			baliseASauver.add("h2");
+			baliseASauver.add("H2");
+			baliseASauver.add("h3");
+			baliseASauver.add("H3");
+			baliseASauver.add("h4");
+			baliseASauver.add("H4");
+		}
 	
 	@Override
 	public boolean isRunning() {

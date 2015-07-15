@@ -1,129 +1,110 @@
 package actions;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
 
-import interfaces.LancerAction;
-import main.Principale;
-import utilitaires.StyleDialogue;
-import utilitaires.StyleDialogueInfo;
+import javax.swing.JOptionPane;
 
-public class Style extends Observable implements LancerAction {
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import interfaces.Action;
+
+public class Style extends Action {
 
 	private String mot, style;
-	private ArrayList<File> files, htmlFiles;
-	private boolean running;
-	private StyleDialogue sd;
-	private StyleDialogueInfo sdInfo;
 
 	public Style(ArrayList<File> files){
-		this.files = files;
-		this.running = false;
-		this.htmlFiles = new ArrayList<File>();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm")) {
-				htmlFiles.add(file);
-			}
-		}
-
+		super(files);
+		mot = "";
+		style = "";
+		intitule = "Application d'un style à un mot";
 	}
 	
-	public void run() {
-		running = true;
-		update();
-		lancerActionAll();
-		running = false;
-		update();
-	}
-
-	@Override
-	public void lancerActionAll() {
-		parametrer();
-		if (sdInfo != null) {
-			mot = sdInfo.getMot();
-			style = sdInfo.getStyle();
-
-			try {
-				for (File f : htmlFiles) {
-					appliquerStyle(f, mot, style);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Principale.messageFin("Changements effectués");
-		}
-		else 
-			Principale.messageFin("Veuillez remplir correctement le formulaire");
-	}
-	
-	@Override
-	public void fichiersSelectionnes(ArrayList<File> files) {
-		lancerAction(files);
-	}
-
-	public void lancerAction(ArrayList<File> files){
-		this.htmlFiles.clear();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-		}
-	}
-
 	@Override
 	public void parametrer(){
-		sd = new StyleDialogue(null, "Quel style appliquer", true, files);
-		sdInfo = sd.showDialog();
-	}
-
-	private void appliquerStyle(File f, String mot, String style) throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		File tmp = new File(f.getAbsolutePath()+"_tmp");
-		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-		String ligne = "";
-
-		while((ligne = br.readLine()) != null){
-			if (ligne.contains(mot)) {
-				ligne = ligne.replace(mot, "<span class=\""+style+"\">"+mot+"</span>");
-				bw.write(ligne+"\r\n");
-			}else
-				bw.write(ligne+"\r\n");		
-		}
-
-		br.close();
-		bw.close();
-
-		Principale.fileMove(tmp, f);
-		tmp.delete();
-
+		getMot();
+		getStyle(getCSSclasses(getCSSFile()));
 	}
 	
-	private void update(){
-		setChanged();
-		notifyObservers();
-	}
-
 	@Override
-	public boolean isRunning() {
-		return running;
+	protected Document applyStyle(Document doc) throws IOException {
+		System.out.println("mot : "+mot+", style : "+style);
+		messageFin = "Le style \""+style+"\" a bien été appliqué sur le mot \""+mot+"\""; 
+		String html = doc.html();
+		html = html.replace(mot, "<span class=\""+style+"\">"+mot+"</span>");
+		doc = Jsoup.parse(html);
+		return doc;
+	}
+	
+	private void getMot(){
+		mot = JOptionPane.showInputDialog(null, "<html>Quel mot ?<br/>(Attention à la casse + pas d'accent)</html>", 
+				"Paramétrage", JOptionPane.QUESTION_MESSAGE);
+	}
+	
+	private String getCSSFile(){
+		String cssFilePath = "";
+		String[] cssFiles = new String[this.cssFiles.size()];
+		for (int i = 0; i < this.cssFiles.size(); i++) {
+			cssFiles[i] = this.cssFiles.get(i).getName();
+		}
+
+		cssFilePath =	(String) JOptionPane.showInputDialog(null, 
+				"Choisir la feuille de style",
+				"Paramétrage",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				cssFiles, cssFiles[0]);
+		
+		for (File file: this.cssFiles) {
+			if (file.getName().equals(cssFilePath))
+				cssFilePath = file.getAbsolutePath();
+		}
+		
+		return cssFilePath;
+	}
+	
+	private ArrayList<String> getCSSclasses(String cssFilePath){
+		ArrayList<String> reponse = new ArrayList<String>();
+
+
+		File file = new File(cssFilePath);
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			String ligne = "";
+			while((ligne = br.readLine()) != null){
+				if (ligne.startsWith("span.")) {
+					int deb = ligne.indexOf("span.") + "span.".length();
+					int fin = ligne.indexOf("{");
+					reponse.add(ligne.substring(deb, fin));
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		}
+		return reponse;
 	}
 
-	@Override
-	public void setRunning(boolean b) {
-		this.running = b;
+
+	private void getStyle(ArrayList<String> styles){
+		String[] s = new String[styles.size()];
+		for (int i = 0; i < s.length; i++) {
+			s[i] = styles.get(i);
+		}
+		
+		style = (String)JOptionPane.showInputDialog(null, 
+		      "Quel style appliquer",
+		      "Paramétrage",
+		      JOptionPane.QUESTION_MESSAGE,
+		      null,
+		      s,
+		      s[2]);
 	}
-
-	@Override
-	public void onDispose() {
-		//Ne rien faire
-	}
-
-
 }
