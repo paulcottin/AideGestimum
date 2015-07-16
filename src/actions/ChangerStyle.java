@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
+import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -32,16 +33,24 @@ public class ChangerStyle extends Action {
 	}
 	
 	@Override
-	protected Document applyStyle(Document doc) throws IOException {			
+	protected Document applyStyle(Document doc) throws IOException {	
 			if (isBalise(oldStyle)) {
 				Elements es = doc.select(oldStyle);
 				if (isBalise(newStyle)) {
 					for (Element element : es) {
 						element.tagName(newStyle);
+						for (Attribute a : element.attributes()) {
+							element.removeAttr(a.getKey());
+						}
+						for (String s : element.classNames()) {
+							element.removeClass(s);
+						}
 						if (isCleannable(element))
 							element.text(element.text());
 					}
-				}else
+				}
+				else {
+					
 					for (Element element : es) {
 						for (String s : element.classNames()) {
 							element.removeClass(s);
@@ -50,6 +59,34 @@ public class ChangerStyle extends Action {
 						if (isCleannable(element))
 							element.text(element.text());
 					}
+				}
+			}
+			else {
+				Elements es = doc.select("."+oldStyle);
+				if (isBalise(newStyle)) {
+					for (Element element : es) {
+						element.tagName(newStyle);
+						for (Attribute a : element.attributes()) {
+							element.removeAttr(a.getKey());
+						}
+						for (String s : element.classNames()) {
+							element.removeClass(s);
+						}
+						if (isCleannable(element))
+							element.text(element.text());
+					}
+				}
+				else {
+					
+					for (Element element : es) {
+						for (String s : element.classNames()) {
+							element.removeClass(s);
+						}
+						element.addClass(newStyle);
+						if (isCleannable(element))
+							element.text(element.text());
+					}
+				}
 			}
 			
 		return doc;

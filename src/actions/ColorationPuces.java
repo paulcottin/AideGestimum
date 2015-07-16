@@ -38,7 +38,7 @@ public class ColorationPuces extends Action {
 			}
 			element.attr("style", "color: "+couleur);
 			if (isCleannable(element)) {
-				element.html("<span class=\"Normal\">"+element.text()+"</span>");
+				element.html("<p>"+element.text()+"</p>");
 			}
 		}
 		

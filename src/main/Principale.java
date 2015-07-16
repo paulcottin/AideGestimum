@@ -22,6 +22,7 @@ import actions.ColorationPuces;
 import actions.CreationPuce;
 import actions.Lien;
 import actions.Style;
+import actions.SupprStyleTitre;
 import actions.SupprimerTitre;
 import actions.Titre;
 import interfaces.Action;
@@ -40,10 +41,10 @@ public class Principale extends Observable {
 
 	public Principale(){
 		files = new ArrayList<File>();
-		//		topics = new File(getTopicsPath());
+		topics = new File(getTopicsPath());
 
-		//		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
-		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
+//		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
+//		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
 
 		listerRepertoire(topics);
 
@@ -67,6 +68,7 @@ public class Principale extends Observable {
 		scripts.add(new CreationPuce(files));
 		scripts.add(new Lien(files));
 		scripts.add(new SupprimerTitre(files));
+		scripts.add(new SupprStyleTitre(files));
 	}
 
 	private String getTopicsPath(){
@@ -145,72 +147,6 @@ public class Principale extends Observable {
 			e.printStackTrace();
 		}
 	}
-
-	//	public void modifNomFichiers(){
-	//		//Choix du dossier
-	//		File f;
-	//		JOptionPane.showMessageDialog(null, "Veuillez indiquer le dossier où les noms de fichiers sont à normaliser");
-	//		JFileChooser fileChooser = new JFileChooser();
-	//		fileChooser.setCurrentDirectory(getCurrentDir());
-	//		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	//		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
-	//			f = fileChooser.getSelectedFile();
-	//		else
-	//			return;
-	//		File d = new File(f.getParentFile().getAbsolutePath()+"\\FichiersNormalisés");
-	//		d.mkdir();
-	//		try {
-	//			modifNomFichiersHelper(f, d);
-	//		} catch (IOException e) {
-	//			e.printStackTrace();
-	//		}
-	//
-	//	}
-	//
-	//	private void modifNomFichiersHelper(File directory, File outPut) throws IOException{
-	//		//list des fichiers
-	//		File[] files = directory.listFiles();
-	//		
-	//		for (int i = 0; i < files.length; i++) {
-	//			String name = files[i].getName();
-	//			//Modification du nom du fichier
-	//			if (files[i].getAbsolutePath().endsWith(".htm") || files[i].isDirectory()) {
-	//				//Suppression du préfixe
-	//				name = name.substring(12);
-	//				//Changement de _ en " "
-	//				name = name.replace("_", " ");
-	//			}
-	//			if ((files[i]).isDirectory()){
-	//				File d = new File(outPut.getAbsolutePath()+"\\"+name);
-	//				d.mkdir();
-	//				modifNomFichiersHelper(files[i], new File(outPut.getAbsolutePath()+"\\"+name));
-	//			}
-	//			else if (!name.endsWith("/") && name != ""){
-	//				//Mise à jour des liens et recopie du fichier
-	//				File tmp = new File(outPut.getAbsolutePath()+"\\"+name);
-	//
-	//				try {
-	//					BufferedReader br = new BufferedReader(new FileReader(files[i]));
-	//					BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-	//					String ligne = "";
-	//					
-	//					while ((ligne = br.readLine()) != null){
-	//						if (ligne.contains(files[i].getName()) && !ligne.contains(files[i].getAbsolutePath()))
-	//							bw.write(ligne.replace(files[i].getName(), name));
-	//						else if (!ligne.contains(files[i].getName()) && ligne.contains(files[i].getAbsolutePath()))
-	//							bw.write(ligne.replace(files[i].getAbsolutePath(), files[i].getParentFile().getAbsolutePath()+"\\"+name));
-	//						else
-	//							bw.write(ligne);
-	//					}
-	//					bw.close();
-	//					br.close();
-	//					fileMove(tmp, files[i]);
-	//				} catch (FileSystemException e) {
-	//					e.printStackTrace();
-	//				}
-	//			}
-	//		}
-	//	}
 
 	public static void fileCopy(File from, File to) throws FileSystemException{
 		Path pathProject = FileSystems.getDefault().getPath(to.getAbsolutePath());

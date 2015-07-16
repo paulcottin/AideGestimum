@@ -1,29 +1,21 @@
 package actions;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.regex.Pattern;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import interfaces.Action;
-import interfaces.LancerAction;
-import main.Principale;
 
 public class CreationPuce extends Action {
 
 	public CreationPuce(ArrayList<File> files) {
 		super(files);
 		intitule = "Création de puces";
+		messageFin = "Création des puces terminée";
 	}
 
 	@Override
@@ -35,17 +27,14 @@ public class CreationPuce extends Action {
 	protected Document applyStyle(Document doc) throws IOException {
 		// TODO Auto-generated method stub
 		Elements style = doc.select("p");
-		System.out.println(style.size());
 		for (int i = 0; i < style.size(); i++) {
 			Element element = style.get(i);
-			System.out.println(element.text().toString());
-			if (element.text().startsWith("Ø") || element.text().startsWith("§") || 
-					element.text().startsWith("-") || element.text().startsWith("•") || element.text().startsWith("·")){
-				String puce = element.text().substring(0,1);
+			if (element.text().startsWith("Ã˜") || element.text().startsWith("Â§") || 
+					element.text().startsWith("-") || element.text().startsWith("•") || element.text().startsWith("Â·")){
+				String puce = element.text().substring(0,element.text().toString().indexOf(" "));
 				while (element != null && (element.text().startsWith(puce)) ){
-					System.out.println(i);
 					element.tagName("li");
-					element.text(element.text().replace(puce, ""));
+					element.text(element.text().toString().replace(puce, ""));
 					i++;
 					element = i < style.size() ? style.get(i) : null;
 				}
@@ -53,7 +42,6 @@ public class CreationPuce extends Action {
 		}
 		String html = doc.html();
 		String[] lignes = html.split("\n");
-		System.out.println("split length : "+lignes.length);
 		boolean isList = false, isUl = false;
 		for (int i = 0; i < lignes.length; i++) {
 			if (lignes[i].contains("<ul>"))
@@ -63,7 +51,7 @@ public class CreationPuce extends Action {
 				isList = true;
 			}
 			else if (!(lignes[i].contains("<li>") || lignes[i].contains("<li ")) && isList && !isUl){
-				lignes[i] = lignes[i] + "</ul>";
+				lignes[i] = "</ul>" + lignes[i];
 				isList = false;
 			}
 			
@@ -74,7 +62,7 @@ public class CreationPuce extends Action {
 		for (String string : lignes) {
 			html += string + "\n";
 		}
-		doc = Jsoup.parse(html, "utf-8");
+		doc = Jsoup.parse(html);
 		return doc;
 	}
 }

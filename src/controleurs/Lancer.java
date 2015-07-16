@@ -2,9 +2,6 @@ package controleurs;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-
 import interfaces.LancerAction;
 import main.Principale;
 import vues.ChoixFichiers;
@@ -43,7 +40,6 @@ public class Lancer implements ActionListener{
 			ProgressBar bar = new ProgressBar(p);
 		}
 		else if (choix == SELECTED_LINES){
-
 			//			Pour les test : Ne fait l'opération que sur Introduction.htm
 			//			ArrayList<File> f = new ArrayList<File>();
 			//			f.add(new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie\\Références\\Ventes\\Le_transfert_automatique_des_commandes.htm"));
