@@ -52,8 +52,9 @@ public class Principale extends Observable {
 
 	public Principale(){
 		files = new ArrayList<File>();
-		topics = new File(getTopicsPath());
+//		topics = new File(getTopicsPath());
 //		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
+		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
 		listerRepertoire(topics);
 
 		style = new Style(files);
@@ -84,7 +85,7 @@ public class Principale extends Observable {
 		scripts.add(new ColorationPuces(files));
 		scripts.add(new ChangerStyle(files));
 		scripts.add(new Titre(files));
-//		scripts.add(new CreationPuce(files));
+		scripts.add(new CreationPuce(files));
 		scripts.add(new Lien(files));
 		scripts.add(new SupprimerTitre(files));
 	}

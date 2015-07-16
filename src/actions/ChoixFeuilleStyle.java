@@ -79,25 +79,12 @@ public class ChoixFeuilleStyle extends Action {
 	@Override
 	protected Document applyStyle(Document doc) throws IOException {
 		// TODO Auto-generated method stub
-		System.out.println("coucou");
-
 		Elements style = doc.select("link[rel=StyleSheet]");
-//		int n = style.size();
-//		System.out.println("n:"+n);
-//		if (n > 1) {
-//			for (int i = 0; i < n-1; i++) {
-//				style.remove(i);
-//			}
-//			style.attr("href", stylePath);
-//
-//		}else
 			for (Element element : style) {
 				element.attr("href", stylePath);
 			}
 		return doc;
 	}
-
-
 
 	@Override
 	public void parametrer() {
