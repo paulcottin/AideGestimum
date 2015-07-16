@@ -1,11 +1,6 @@
 package actions;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -15,9 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import exceptions.FichierNonTrouve;
 import interfaces.Action;
-import main.Principale;
 
 public class ChoixPagePrincipale extends Action {
 
@@ -55,30 +48,36 @@ public class ChoixPagePrincipale extends Action {
 
 	@Override
 	protected Document applyStyle(Document doc) throws IOException {
-		Elements h = doc.select("[type=header]");
-		Elements f = doc.select("[type=footer]");
 		Elements pp = doc.select("[name=template]");
+		String html = doc.html();
 		boolean isHeader = false, isFooter = false, isPP = false;
-		if (h.size() > 0)
+		if (html.contains("placeholder type=\"header\""))
 			isHeader = true;
-		if (f.size() > 0)
+		if (html.contains("placeholder type=\"footer\""))
 			isFooter = true;
 		if (pp.size() > 0)
 			isPP = true;
-		System.out.println("header : "+isHeader+", footer : "+isFooter+", pp : "+isPP);
+		System.out.println("pp : "+isPP+", header : "+isHeader+", footer : "+isFooter);
 		if (isPP)
 			pp.first().attr("content", pagePath);
 		else {
 			Elements meta = doc.select("meta");
-			int index = meta.size() + 1;
+			int index = meta.size();
 			Element e = meta.first().clone();
 			for (Attribute a: e.attributes()) {
 				e.removeAttr(a.getKey());
 			}
 			e.attr("name", "template");
 			e.attr("content", pagePath);
-			doc.insertChildren(index, meta);
+			System.out.println(e.toString());
+			Elements head = doc.select("head");
+			Elements list = new Elements(e);
+			head.first().insertChildren(index, list);
 		}
+		if (!isFooter)
+			doc.select("body").append("<!--?rh-placeholder type=\"footer\" ?--> ");
+		if (!isHeader)
+			doc.select("body").prepend("<!--?rh-placeholder type=\"header\" ?--> ");
 		return doc;
 	}
 

@@ -1,25 +1,15 @@
 package actions;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-
 import javax.swing.JOptionPane;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import exceptions.FichierNonTrouve;
 import interfaces.Action;
-import interfaces.LancerAction;
-import main.Principale;
 
 public class ChoixFeuilleStyle extends Action {
 
