@@ -10,54 +10,20 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.regex.Pattern;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import interfaces.Action;
 import interfaces.LancerAction;
 import main.Principale;
 
-public class CreationPuce extends Observable implements LancerAction {
-
-	private ArrayList<File> htmlFiles;
-	private boolean running;
+public class CreationPuce extends Action {
 
 	public CreationPuce(ArrayList<File> files) {
-		htmlFiles = new ArrayList<File>();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-		}
-		running = false;
-	}
-
-	@Override
-	public void run() {
-		lancerActionAll();
-		running = false;
-		update();
-	}
-
-	@Override
-	public void fichiersSelectionnes(ArrayList<File> files) {
-		lancerAction(files);
-	}
-
-	@Override
-	public void lancerActionAll() {
-		parametrer();
-		running = true;
-		update();
-		for (File file : htmlFiles) {
-			try {
-				creaPuce(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		Principale.messageFin("création puce est finie");
-	}
-
-	@Override
-	public void lancerAction(ArrayList<File> files) {
-		htmlFiles.clear();
-		htmlFiles.addAll(files);
+		super(files);
+		intitule = "Création de puces";
 	}
 
 	@Override
@@ -65,88 +31,50 @@ public class CreationPuce extends Observable implements LancerAction {
 
 	}
 
-	private void creaPuce(File file) throws IOException{
-		File tmp = new File("tmp");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
-
-		String ligne = "";
-		String balise = "p";
-		String tiret = "";
-		String baliseText = ligne;
-		if (baliseText.contains(">- ")){
-			tiret = ">- ";										
-		}else if (baliseText.contains(">Ø&")) {
-			tiret = ">Ø&";
-		}
-		while ((ligne = br.readLine()) != null){
-			//Si la balise ne tient pas en une ligne
-			if (balise != null && !ligne.contains("</"+balise+">")) {
-				ligne = br.readLine();
-				while (ligne != null && !ligne.contains("</"+balise+">") && !ligne.contains("<?")){
-					baliseText += ligne;
-					ligne = br.readLine();
+	@Override
+	protected Document applyStyle(Document doc) throws IOException {
+		// TODO Auto-generated method stub
+		Elements style = doc.select("p");
+		System.out.println(style.size());
+		for (int i = 0; i < style.size(); i++) {
+			Element element = style.get(i);
+			System.out.println(element.text().toString());
+			if (element.text().startsWith("Ø") || element.text().startsWith("§") || 
+					element.text().startsWith("-") || element.text().startsWith("•") || element.text().startsWith("·")){
+				String puce = element.text().substring(0,1);
+				while (element != null && (element.text().startsWith(puce)) ){
+					System.out.println(i);
+					element.tagName("li");
+					element.text(element.text().replace(puce, ""));
+					i++;
+					element = i < style.size() ? style.get(i) : null;
 				}
-				baliseText += (ligne != null) ? ligne : "";
-				bw.write("<ul>\r\n");
-				bw.write("<li>"+baliseText.substring(baliseText.indexOf(tiret)+tiret.length())+"</li>\r\n");
-			}else{
-				bw.write(baliseText+"\r\n");
-		}
-		//Si la balise tient en une ligne
-		else if (ligne.contains("tiret")) {
-			bw.write("<ul>\r\n");
-			bw.write("<li>"+ligne.substring(ligne.indexOf(tiret)+tiret.length())+"</li>\r\n");
-			while ((ligne = br.readLine()).contains(tiret) || (ligne = br.readLine()).contains(tiret)) {
-				bw.write("<li>"+ligne.substring(ligne.indexOf(tiret)+tiret.length())+"</li>\r\n");
 			}
-			bw.write("</ul>\r\n");
-		}else
-			bw.write(ligne+"\r\n");
+		}
+		String html = doc.html();
+		String[] lignes = html.split("\n");
+		System.out.println("split length : "+lignes.length);
+		boolean isList = false, isUl = false;
+		for (int i = 0; i < lignes.length; i++) {
+			if (lignes[i].contains("<ul>"))
+				isUl = true;
+			if ((lignes[i].contains("<li>") || lignes[i].contains("<li ")) && !isList && !isUl) {
+				lignes[i] = "<ul>"+lignes[i];
+				isList = true;
+			}
+			else if (!(lignes[i].contains("<li>") || lignes[i].contains("<li ")) && isList && !isUl){
+				lignes[i] = lignes[i] + "</ul>";
+				isList = false;
+			}
+			
+			if (lignes[i].contains("</ul>"))
+				isUl = false;
+		}
+		html = "";
+		for (String string : lignes) {
+			html += string + "\n";
+		}
+		doc = Jsoup.parse(html, "utf-8");
+		return doc;
 	}
-	br.close();
-	bw.close();
-
-	Principale.fileMove(tmp, file);
-	tmp.delete();
-
-}
-
-/**
- * Récupère le texte brut présent dans une ligne du document
- * Mise à part des balises d'image et de lien
- * @param ligne
- * @return
- */
-private String getText(String ligne){
-	ligne = ligne.replace("\r\n", " ");
-	Pattern p = Pattern.compile("<.*?>", Pattern.DOTALL);
-	String[] tab = ligne.split(p.pattern());
-	String s = "";
-	for (String string : tab) {
-		s += string;
-	}
-	return s;
-}
-
-@Override
-public boolean isRunning() {
-	return running;
-}
-
-@Override
-public void setRunning(boolean b) {
-	running = b;
-}
-
-@Override
-public void onDispose() {
-	// Ne rien faire
-}
-
-private void update(){
-	setChanged();
-	notifyObservers();
-}
-
 }
