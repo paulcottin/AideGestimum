@@ -19,10 +19,8 @@ import actions.ChangerStyle;
 import actions.ChoixFeuilleStyle;
 import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
-import actions.CreationPuce;
 import actions.Lien;
 import actions.Style;
-import actions.SupprimerBalise;
 import actions.SupprimerTitre;
 import actions.Titre;
 import interfaces.Action;
@@ -32,18 +30,7 @@ public class Principale extends Observable {
 
 	public static File FILE_BASE;
 
-	private Style style;
-	private ChoixFeuilleStyle choixFeuilleStyle;
-	private ChoixPagePrincipale choixPagePrincipale;
-	private SupprimerBalise supprimerBalise;
-	private AssociationAuto assocAuto;
-	private ColorationPuces colorationPuces;
-	private ChangerStyle changerStyle;
 	private Script script;
-	private Titre titre;
-	private CreationPuce creationPuce;
-	private Lien lien;
-	private SupprimerTitre supprimerTitre;
 	private ArrayList<Action> scripts;
 
 	File topics;
@@ -52,22 +39,11 @@ public class Principale extends Observable {
 
 	public Principale(){
 		files = new ArrayList<File>();
-		topics = new File(getTopicsPath());
-//		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
+//		topics = new File(getTopicsPath());
+		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
 		listerRepertoire(topics);
-
-		style = new Style(files);
-		choixFeuilleStyle = new ChoixFeuilleStyle(files);
-		choixPagePrincipale = new ChoixPagePrincipale(files);
-		supprimerBalise = new SupprimerBalise(files);
-		assocAuto = new AssociationAuto(files);
-		colorationPuces = new ColorationPuces(files);
-		changerStyle = new ChangerStyle(files);
+		
 		script = new Script(files);
-		titre = new Titre(files);
-		creationPuce = new CreationPuce(files);
-		lien = new Lien(files);
-		supprimerTitre = new SupprimerTitre(files);
 		scripts = new ArrayList<Action>();
 		initActions();
 		
@@ -254,30 +230,6 @@ public class Principale extends Observable {
 		Fenetre fen = new Fenetre(p);
 	}
 
-	public Style getStyle() {
-		return style;
-	}
-
-	public void setStyle(Style style) {
-		this.style = style;
-	}
-
-	public ChoixFeuilleStyle getChoixFeuilleStyle() {
-		return choixFeuilleStyle;
-	}
-
-	public void setChoixFeuilleStyle(ChoixFeuilleStyle choixFeuilleStyle) {
-		this.choixFeuilleStyle = choixFeuilleStyle;
-	}
-
-	public ChoixPagePrincipale getChoixPagePrincipale() {
-		return choixPagePrincipale;
-	}
-
-	public void setChoixPagePrincipale(ChoixPagePrincipale choixPagePrincipale) {
-		this.choixPagePrincipale = choixPagePrincipale;
-	}
-
 	public ArrayList<File> getFiles() {
 		return files;
 	}
@@ -286,84 +238,12 @@ public class Principale extends Observable {
 		this.files = files;
 	}
 
-	public SupprimerBalise getSupprimerBalise() {
-		return supprimerBalise;
-	}
-
-	public void setSupprimerBalise(SupprimerBalise supprimerBalise) {
-		this.supprimerBalise = supprimerBalise;
-	}
-
-	public AssociationAuto getAssocAuto() {
-		return assocAuto;
-	}
-
-	public void setAssocAuto(AssociationAuto assocAuto) {
-		this.assocAuto = assocAuto;
-	}
-
-	public ColorationPuces getColorationPuces() {
-		return colorationPuces;
-	}
-
-	public void setColorationPuces(ColorationPuces colorationPuces) {
-		this.colorationPuces = colorationPuces;
-	}
-
-	public ChangerStyle getChangerStyle() {
-		return changerStyle;
-	}
-
-	public void setChangerStyle(ChangerStyle changerStyle) {
-		this.changerStyle = changerStyle;
-	}
-
 	public Script getScript() {
 		return script;
 	}
 
 	public void setScript(Script script) {
 		this.script = script;
-	}
-
-	public Titre getTitre() {
-		return titre;
-	}
-
-	public void setTitre(Titre titre) {
-		this.titre = titre;
-	}
-
-	public CreationPuce getCreationPuce() {
-		return creationPuce;
-	}
-
-	public void setCreationPuce(CreationPuce creationPuce) {
-		this.creationPuce = creationPuce;
-	}
-
-//	public Lien getLien() {
-//		return lien;
-//	}
-//
-//	public void setLien(Lien lien) {
-//		this.lien = lien;
-//	}
-	
-	public Lien getLien() {
-		return lien;
-	}
-
-	public void setLien(Lien lien) {
-		this.lien = lien;
-	}
-
-	public SupprimerTitre getSupprimerTitre() {
-		return supprimerTitre;
-	}
-
-	public void setSupprimerTitre(SupprimerTitre supprimerTitre) {
-		this.supprimerTitre = supprimerTitre;
 	}
 
 	public ArrayList<Action> getScripts() {

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import javax.swing.JOptionPane;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -90,16 +92,13 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 		
 		Document doc = Jsoup.parse(txt);
-		
 		doc = applyStyle(doc);
-		
 		String html = doc.html();
 
 		html = html.replace("<!--?", "<?");
 		html = html.replace("?-->", "?>");
 		
 		bw.write(html);
-		
 		br.close();
 		bw.close();
 
@@ -113,12 +112,96 @@ public abstract class Action extends Observable implements LancerAction{
 	@Override
 	public void lancerAction(ArrayList<File> files) {
 		htmlFiles.clear();
-		
 	}
 
 
 	@Override
 	public abstract void parametrer();
+	
+	protected File cssFile(String titre, String message){
+		String cssFilePath = null;
+		String[] cssFiles = new String[this.cssFiles.size()];
+		for (int i = 0; i < this.cssFiles.size(); i++) {
+			cssFiles[i] = this.cssFiles.get(i).getName();
+		}
+		
+		cssFilePath =	(String) JOptionPane.showInputDialog(null, 
+				message,
+				titre,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				cssFiles, cssFiles[0]);
+		
+		ArrayList<String> tmp = new ArrayList<String>();
+		for (String string : cssFiles) {
+			tmp.add(string);
+		}
+		cssFilePath = this.cssFiles.get(tmp.indexOf(cssFilePath)).getAbsolutePath();
+		return new File(cssFilePath);
+	}
+	
+	protected String cssClass(File file, String titre, String message){
+		String[] styles = afficheCSSClasses(getCssClass(file));
+		String style =	(String) JOptionPane.showInputDialog(null, 
+				message,
+				titre,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				styles, styles[0]);
+		
+		style = getCSSBalise(style);
+		return style;
+	}
+	
+	private ArrayList<String> getCssClass(File file) {
+		ArrayList<String> reponse = new ArrayList<String>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			String ligne = "";
+			while((ligne = br.readLine()) != null){
+				if (ligne.contains("{")) {
+					String classe = ligne.substring(0, ligne.indexOf("{")-1);
+					if (classe.contains("."))
+						classe = classe.split("\\.")[1];
+					reponse.add(classe);
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return reponse;
+	}
+	
+	/**
+	 * D'un titre affiché donne le nom de la balise ou de la classe CSS
+	 * @param classeAffichee
+	 * @return
+	 */
+	private String getCSSBalise(String classeAffichee){
+		if (classeAffichee.equals("Normal"))
+			return "p";
+		else if (classeAffichee.matches("Titre [0-9]"))
+			return "H"+classeAffichee.substring("Titre ".length());
+		else
+			return classeAffichee;
+	}
+	
+	private String[] afficheCSSClasses(ArrayList<String> classes){
+		String[] styles = new String[classes.size()];
+		for (int i = 0; i < classes.size(); i++) {
+			if (classes.get(i).equals("p"))
+				styles[i] = "Normal";
+			else if (classes.get(i).matches("(H|h)[0-9]"))
+				styles[i] = "Titre "+classes.get(i).substring(1);
+			else
+				styles[i] = classes.get(i);
+		}
+		return styles;
+	}
 	
 	protected boolean isCleannable(Element element){
 		boolean clean = true;

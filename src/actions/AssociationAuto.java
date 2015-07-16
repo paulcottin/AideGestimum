@@ -113,13 +113,11 @@ public class AssociationAuto extends Action {
 		for (int i = 0; i < PP.size(); i++) {
 			if (!PP.get(i).equals(0)) {
 				//on crée le doc de la pp
-				Document d = Jsoup.parse(new File(PP.get(i)), "utf-8");
-				choixPP.setPagePath(PP.get(i));
+				choixPP.setPagePath(ppPath.get(i));
 				//On fixe les fichiers sur lesquels on applique le traitement
-				choixPP.getHtmlFiles().clear();
-				choixPP.getHtmlFiles().add(new File(paths.get(i)));
+				Document d = Jsoup.parse(new File(paths.get(i)), "utf-8");
 				//On applique
-//				choixPP.
+				choixPP.applyStyle(d);
 			}
 		}
 		return null;

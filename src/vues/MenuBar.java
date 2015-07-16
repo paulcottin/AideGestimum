@@ -8,10 +8,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import controleurs.ExporterCSV;
-import controleurs.Lancer;
 import controleurs.ModifierNomFichiers;
 import controleurs.Quitter;
-import interfaces.LancerAction;
 import main.Principale;
 
 
@@ -30,7 +28,7 @@ public class MenuBar extends JMenuBar implements Observer{
 	private Principale p;
 
 	private JMenu fichier, actions;
-	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS, remplacerTitre;
+	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS;
 	
 	public MenuBar(Principale p) {
 		super();
@@ -54,8 +52,6 @@ public class MenuBar extends JMenuBar implements Observer{
 		modifNomFichiers.setEnabled(false);
 		rechercheCSS = new JMenuItem("Recherche d'un CSS en fonction d'un nom de classe");
 		rechercheCSS.addActionListener(new controleurs.SearchCSS(p.getFiles()));
-		remplacerTitre = new JMenuItem("Remplacer les titres");
-		remplacerTitre.addActionListener(new Lancer(p.getTitre(), p, Lancer.SELECTED_LINES));
 	}
 	
 	private void construct(){
@@ -65,7 +61,6 @@ public class MenuBar extends JMenuBar implements Observer{
 		
 		actions.add(modifNomFichiers);
 		actions.add(rechercheCSS);
-		actions.add(remplacerTitre);
 		
 		this.add(fichier);
 		this.add(actions);

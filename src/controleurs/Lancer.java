@@ -43,13 +43,13 @@ public class Lancer implements ActionListener{
 			ProgressBar bar = new ProgressBar(p);
 		}
 		else if (choix == SELECTED_LINES){
-			//			Pour les test : Ne fait l'opération que sur Introduction.htm
-			ArrayList<File> f = new ArrayList<File>();
-			f.add(new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\FichiersPartages\\T\\Le_transfert_automatique_des_commandes.htm"));
-			p.lancerAction(f);
-			p.run();
-			//			@SuppressWarnings("unused")
-			//			ChoixFichiers cf = new ChoixFichiers(principale.getFiles(), p);
+//			//			Pour les test : Ne fait l'opération que sur Introduction.htm
+//			ArrayList<File> f = new ArrayList<File>();
+//			f.add(new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\FichiersPartages\\T\\Le_transfert_automatique_des_commandes.htm"));
+//			p.lancerAction(f);
+//			p.run();
+						@SuppressWarnings("unused")
+						ChoixFichiers cf = new ChoixFichiers(principale.getFiles(), p);
 		}
 	}
 
