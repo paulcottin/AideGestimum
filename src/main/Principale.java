@@ -25,6 +25,7 @@ import actions.Style;
 import actions.SupprimerBalise;
 import actions.SupprimerTitre;
 import actions.Titre;
+import interfaces.Action;
 import vues.Fenetre;
 
 public class Principale extends Observable {
@@ -43,6 +44,7 @@ public class Principale extends Observable {
 	private CreationPuce creationPuce;
 	private Lien lien;
 	private SupprimerTitre supprimerTitre;
+	private ArrayList<Action> scripts;
 
 	File topics;
 	ArrayList<File> files;
@@ -66,9 +68,25 @@ public class Principale extends Observable {
 		creationPuce = new CreationPuce(files);
 		lien = new Lien(files);
 		supprimerTitre = new SupprimerTitre(files);
-
+		scripts = new ArrayList<Action>();
+		initActions();
+		
 		setChanged();
 		notifyObservers();
+	}
+	
+	private void initActions(){
+		scripts.add(new Style(files));
+		scripts.add(new ChoixFeuilleStyle(files));
+		scripts.add(new ChoixPagePrincipale(files));
+//		scripts.add(new SupprimerBalise(files));
+		scripts.add(new AssociationAuto(files));
+		scripts.add(new ColorationPuces(files));
+		scripts.add(new ChangerStyle(files));
+		scripts.add(new Titre(files));
+//		scripts.add(new CreationPuce(files));
+		scripts.add(new Lien(files));
+		scripts.add(new SupprimerTitre(files));
 	}
 
 	private String getTopicsPath(){
@@ -346,5 +364,13 @@ public class Principale extends Observable {
 
 	public void setSupprimerTitre(SupprimerTitre supprimerTitre) {
 		this.supprimerTitre = supprimerTitre;
+	}
+
+	public ArrayList<Action> getScripts() {
+		return scripts;
+	}
+
+	public void setScripts(ArrayList<Action> scripts) {
+		this.scripts = scripts;
 	}
 }

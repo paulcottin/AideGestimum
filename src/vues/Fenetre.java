@@ -1,5 +1,6 @@
 package vues;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,6 +12,7 @@ import javax.swing.JPanel;
 
 import controleurs.Lancer;
 import controleurs.ParametrerScript;
+import interfaces.Action;
 import main.Principale;
 
 public class Fenetre extends JFrame implements Observer{
@@ -19,14 +21,12 @@ public class Fenetre extends JFrame implements Observer{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Principale principale;
-	JLabel applicationStyle, choixFeuilleStyle, choixPagePrincipale, supprimerBalise, association, colorationPuces, 
-		changementStyle, script, creationPuce, creerLien, supprimerTitre;
-	JButton applicationStyle_l, choixFeuilleStyle_l, choixPagePrincipale_l, supprimerBalise_l, association_l, colorationPuces_l, 
-		changementStyle_l, creationPuce_l, creerLien_l, supprimerTitre_l;
-	JButton applicationStyle_all, choixFeuilleStyle_all, choixPagePincipale_all, supprimerBalise_all, colorationPuces_all, 
-		changementStyle_all, script_all, creationPuce_all, creerLien_all, supprimerTitre_all;
-	JButton selectAll;
+	private Principale principale;
+	private ArrayList<JLabel> labels;
+	private ArrayList<JButton> selects, alls;
+	
+	JLabel script;
+	JButton script_all;
 	
 	ListeFichier listeFichier;
 	
@@ -37,6 +37,9 @@ public class Fenetre extends JFrame implements Observer{
 		this.principale= principale;
 		this.principale.addObserver(this);
 		this.listeFichier = new ListeFichier(principale.getFiles());
+		this.labels = new ArrayList<JLabel>();
+		this.selects = new ArrayList<JButton>();
+		this.alls = new ArrayList<JButton>();
 		
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 		initWin();
@@ -51,136 +54,37 @@ public class Fenetre extends JFrame implements Observer{
 		this.setLocationRelativeTo(null);
 		this.setJMenuBar(new vues.MenuBar(principale));
 		
-		applicationStyle = new JLabel("Application d'un style particulier à un mot");
-		applicationStyle_l = new JButton("Sélection");
-		applicationStyle_l.addActionListener(new Lancer(principale.getStyle(), principale, Lancer.SELECTED_LINES));
-		applicationStyle_all = new JButton("Tout");
-		applicationStyle_all.addActionListener(new Lancer(principale.getStyle(), principale));
-		
-		choixFeuilleStyle = new JLabel("Choix d'une feuille de style");
-		choixFeuilleStyle_l = new JButton("Sélection");
-		choixFeuilleStyle_l.addActionListener(new Lancer(principale.getChoixFeuilleStyle(), principale, Lancer.SELECTED_LINES));
-		choixFeuilleStyle_all = new JButton("Tout");
-		choixFeuilleStyle_all.addActionListener(new Lancer(principale.getChoixFeuilleStyle(), principale));
-		
-		choixPagePrincipale = new JLabel("Choix d'une page principale");
-		choixPagePrincipale_l = new JButton("Sélection");
-		choixPagePrincipale_l.addActionListener(new Lancer(principale.getChoixPagePrincipale(), principale, Lancer.SELECTED_LINES));
-		choixPagePincipale_all = new JButton("Tout");
-		choixPagePincipale_all.addActionListener(new Lancer(principale.getChoixPagePrincipale(), principale));
-		
-		supprimerBalise = new JLabel("Supprimer une balise");
-		supprimerBalise_l = new JButton("Sélection");
-		supprimerBalise_l.addActionListener(new Lancer(principale.getSupprimerBalise(), principale, Lancer.SELECTED_LINES));
-		supprimerBalise_all = new JButton("Tout");
-		supprimerBalise_all.addActionListener(new Lancer(principale.getSupprimerBalise(), principale));
-		
-		association = new JLabel("Associer automatiquement les pages principales aux rubriques");
-		association_l = new JButton("Lancer");
-		association_l.addActionListener(new Lancer(principale.getAssocAuto(), principale));
-		
-		colorationPuces = new JLabel("Colorer les puces en fonction du bandeau");
-		colorationPuces_l = new JButton("Sélection");
-		colorationPuces_l.addActionListener(new Lancer(principale.getColorationPuces(), principale, Lancer.SELECTED_LINES));
-		colorationPuces_all = new JButton("Tout");
-		colorationPuces_all.addActionListener(new Lancer(principale.getColorationPuces(), principale));
-		
-		changementStyle = new JLabel("Changer d'un style à un autre");
-		changementStyle_l = new JButton("Sélection");
-		changementStyle_l.addActionListener(new Lancer(principale.getChangerStyle(), principale, Lancer.SELECTED_LINES));
-		changementStyle_all = new JButton("Tout");
-		changementStyle_all.addActionListener(new Lancer(principale.getChangerStyle(), principale));
-		
 		script = new JLabel("Paramétrer un script");
 		script_all = new JButton("Paramétrer");
 		script_all.addActionListener(new ParametrerScript(principale.getScript()));
-		
-		creationPuce = new JLabel("Création de puces");
-		creationPuce_l = new JButton("Sélection");
-		creationPuce_l.addActionListener(new Lancer(principale.getCreationPuce(), principale, Lancer.SELECTED_LINES));
-		creationPuce_all = new JButton("Tous");
-		creationPuce_all.addActionListener(new Lancer(principale.getCreationPuce(), principale));
-		
-		creerLien = new JLabel("Créer les liens");
-		creerLien_l = new JButton("Sélection");
-		creerLien_l.addActionListener(new Lancer(principale.getLien(), principale, Lancer.SELECTED_LINES));
-		creerLien_all = new JButton("Tous");
-		creerLien_all.addActionListener(new Lancer(principale.getLien(), principale));		
-		
-		supprimerTitre = new JLabel(principale.getSupprimerTitre().getIntitule());
-		supprimerTitre_l = new JButton("Sélection");
-		supprimerTitre_l.addActionListener(new Lancer(principale.getSupprimerTitre(), principale, Lancer.SELECTED_LINES));
-		supprimerTitre_all = new JButton("Tous");
-		supprimerTitre_all.addActionListener(new Lancer(principale.getSupprimerTitre(), principale));
 	}
 	
-	private void createWin(){
-		JPanel style = new JPanel();
-		style.add(applicationStyle);
-		style.add(applicationStyle_l);
-		style.add(applicationStyle_all);
-		
-		JPanel choixFeuille = new JPanel();
-		choixFeuille.add(choixFeuilleStyle);
-		choixFeuille.add(choixFeuilleStyle_l);
-		choixFeuille.add(choixFeuilleStyle_all);
-		
-		JPanel choixPP = new JPanel();
-		choixPP.add(choixPagePrincipale);
-		choixPP.add(choixPagePrincipale_l);
-		choixPP.add(choixPagePincipale_all);
-		
-		JPanel suppBalise = new JPanel();
-		suppBalise.add(supprimerBalise);
-		suppBalise.add(supprimerBalise_l);
-		suppBalise.add(supprimerBalise_all);
-		
-		JPanel assocAuto = new JPanel();
-		assocAuto.add(association);
-		assocAuto.add(association_l);
-		
-		JPanel coloPuces = new JPanel();
-		coloPuces.add(colorationPuces);
-		coloPuces.add(colorationPuces_l);
-		coloPuces.add(colorationPuces_all);
-		
-		JPanel changerS = new JPanel();
-		changerS.add(changementStyle);
-		changerS.add(changementStyle_l);
-		changerS.add(changementStyle_all);
-		
-		JPanel scriptP = new JPanel();
-		scriptP.add(script);
-		scriptP.add(script_all);
-		
-		JPanel creationPuce = new JPanel();
-		creationPuce.add(this.creationPuce);
-		creationPuce.add(creationPuce_l);
-		creationPuce.add(creationPuce_all);
-		
-		JPanel creerLien = new JPanel();
-		creerLien.add(this.creerLien);
-		creerLien.add(creerLien_l);
-		creerLien.add(creerLien_all);
-		
-		JPanel suppTitre = new JPanel();
-		suppTitre.add(supprimerTitre);
-		suppTitre.add(supprimerTitre_l);
-		suppTitre.add(supprimerTitre_all);
-		
-		this.getContentPane().add(style);
-		this.getContentPane().add(choixFeuille);
-		this.getContentPane().add(choixPP);
-		this.getContentPane().add(suppBalise);
-		this.getContentPane().add(assocAuto);
-		this.getContentPane().add(coloPuces);
-		this.getContentPane().add(changerS);
-		this.getContentPane().add(scriptP);
-		this.getContentPane().add(creationPuce);
-		this.getContentPane().add(creerLien);
-		this.getContentPane().add(suppTitre);
-	}
 
+	private void createWin(){
+		for (Action action : principale.getScripts()) {
+			labels.add(new JLabel(action.getIntitule()));
+			JButton b = new JButton("Sélection");
+			b.addActionListener(new Lancer(action, principale, Lancer.SELECTED_LINES));
+			selects.add(b);
+			JButton a = new JButton("Tous");
+			a.addActionListener(new Lancer(action, principale));
+			alls.add(a);
+		}
+		
+		for (int i = 0; i < labels.size(); i++) {
+			JPanel p = new JPanel();
+			p.add(labels.get(i));
+			p.add(selects.get(i));
+			p.add(alls.get(i));
+			this.getContentPane().add(p);
+		}
+		
+		JPanel scr = new JPanel();
+		scr.add(script);
+		scr.add(script_all);
+		this.getContentPane().add(scr);
+	}
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		
