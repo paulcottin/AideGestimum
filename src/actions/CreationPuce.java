@@ -72,77 +72,81 @@ public class CreationPuce extends Observable implements LancerAction {
 
 		String ligne = "";
 		String balise = "p";
+		String tiret = "";
+		String baliseText = ligne;
+		if (baliseText.contains(">- ")){
+			tiret = ">- ";										
+		}else if (baliseText.contains(">Ø&")) {
+			tiret = ">Ø&";
+		}
 		while ((ligne = br.readLine()) != null){
 			//Si la balise ne tient pas en une ligne
 			if (balise != null && !ligne.contains("</"+balise+">")) {
-				String baliseText = ligne;
 				ligne = br.readLine();
 				while (ligne != null && !ligne.contains("</"+balise+">") && !ligne.contains("<?")){
 					baliseText += ligne;
 					ligne = br.readLine();
 				}
 				baliseText += (ligne != null) ? ligne : "";
-
-				if (baliseText.contains(">- ") || baliseText.contains(">Ø ")) {
-					bw.write("<ul>\r\n");
-					bw.write("<li>"+baliseText.substring(baliseText.indexOf(">- ")+">- ".length())+"</li>\r\n");
-				}	else 
-					bw.write(baliseText+"\r\n");
-			}
-			//Si la balise tient en une ligne
-			else if (ligne.contains(">- ") || ligne.contains(">Ø ")) {
 				bw.write("<ul>\r\n");
-				bw.write("<li>"+ligne.substring(ligne.indexOf(">- ")+">- ".length())+"</li>\r\n");
-				while ((ligne = br.readLine()).contains(">- ") || (ligne = br.readLine()).contains(">Ø ")) {
-					bw.write("<li>"+ligne.substring(ligne.indexOf(">- ")+">- ".length())+"</li>\r\n");
-				}
-				bw.write("</ul>\r\n");
-			}else
-				bw.write(ligne+"\r\n");
+				bw.write("<li>"+baliseText.substring(baliseText.indexOf(tiret)+tiret.length())+"</li>\r\n");
+			}else{
+				bw.write(baliseText+"\r\n");
 		}
-		br.close();
-		bw.close();
-
-		Principale.fileMove(tmp, file);
-		tmp.delete();
-
+		//Si la balise tient en une ligne
+		else if (ligne.contains("tiret")) {
+			bw.write("<ul>\r\n");
+			bw.write("<li>"+ligne.substring(ligne.indexOf(tiret)+tiret.length())+"</li>\r\n");
+			while ((ligne = br.readLine()).contains(tiret) || (ligne = br.readLine()).contains(tiret)) {
+				bw.write("<li>"+ligne.substring(ligne.indexOf(tiret)+tiret.length())+"</li>\r\n");
+			}
+			bw.write("</ul>\r\n");
+		}else
+			bw.write(ligne+"\r\n");
 	}
+	br.close();
+	bw.close();
 
-	/**
-	 * Récupère le texte brut présent dans une ligne du document
-	 * Mise à part des balises d'image et de lien
-	 * @param ligne
-	 * @return
-	 */
-	private String getText(String ligne){
-		ligne = ligne.replace("\r\n", " ");
-		Pattern p = Pattern.compile("<.*?>", Pattern.DOTALL);
-		String[] tab = ligne.split(p.pattern());
-		String s = "";
-		for (String string : tab) {
-			s += string;
-		}
-		return s;
-	}
+	Principale.fileMove(tmp, file);
+	tmp.delete();
 
-	@Override
-	public boolean isRunning() {
-		return running;
-	}
+}
 
-	@Override
-	public void setRunning(boolean b) {
-		running = b;
+/**
+ * Récupère le texte brut présent dans une ligne du document
+ * Mise à part des balises d'image et de lien
+ * @param ligne
+ * @return
+ */
+private String getText(String ligne){
+	ligne = ligne.replace("\r\n", " ");
+	Pattern p = Pattern.compile("<.*?>", Pattern.DOTALL);
+	String[] tab = ligne.split(p.pattern());
+	String s = "";
+	for (String string : tab) {
+		s += string;
 	}
+	return s;
+}
 
-	@Override
-	public void onDispose() {
-		// Ne rien faire
-	}
+@Override
+public boolean isRunning() {
+	return running;
+}
 
-	private void update(){
-		setChanged();
-		notifyObservers();
-	}
+@Override
+public void setRunning(boolean b) {
+	running = b;
+}
+
+@Override
+public void onDispose() {
+	// Ne rien faire
+}
+
+private void update(){
+	setChanged();
+	notifyObservers();
+}
 
 }
