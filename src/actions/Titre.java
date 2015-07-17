@@ -34,6 +34,18 @@ public class Titre extends Action {
 			}
 			element.text(element.text());
 		}
+		
+		Elements p = doc.select("p");
+		for (Element element : p) {
+			System.out.println(element.text());
+			if (element.text().matches("^[0-9]-( )*( )*[A-Z].*")){
+				element.tagName("h1");
+				for (Attribute a : element.attributes()) {
+					element.removeAttr(a.getKey());
+				}
+				element.text(element.text());
+			}
+		}
 		return doc;
 	}
 

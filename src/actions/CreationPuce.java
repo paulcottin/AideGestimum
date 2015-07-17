@@ -12,10 +12,18 @@ import interfaces.Action;
 
 public class CreationPuce extends Action {
 
+	ArrayList<String> puces;
+
 	public CreationPuce(ArrayList<File> files) {
 		super(files);
 		intitule = "Création de puces";
 		messageFin = "Création des puces terminée";
+		puces = new ArrayList<String>();
+		puces.add("§");
+		puces.add("Ø");
+		puces.add("•");
+		puces.add("·");
+		puces.add("-");
 	}
 
 	@Override
@@ -25,21 +33,25 @@ public class CreationPuce extends Action {
 
 	@Override
 	protected Document applyStyle(Document doc) throws IOException {
-		// TODO Auto-generated method stub
 		Elements style = doc.select("p");
 		for (int i = 0; i < style.size(); i++) {
 			Element element = style.get(i);
-			if (element.text().startsWith("Ã˜") || element.text().startsWith("Â§") || 
-					element.text().startsWith("-") || element.text().startsWith("•") || element.text().startsWith("Â·")){
-				String puce = element.text().substring(0,element.text().toString().indexOf(" "));
-				while (element != null && (element.text().startsWith(puce)) ){
+			if (containsPuce(element.text())){
+				String puce = getPuce(element.text());
+				while (element != null && (containsPuce(element.text())) ){
 					element.tagName("li");
-					element.text(element.text().toString().replace(puce, ""));
+					String txt = element.text();
+					if (puce.equals("è"))
+						txt = txt.replaceFirst(puce, "");
+					else
+						txt = txt.replace(puce, "");
+					element.text(txt);
 					i++;
 					element = i < style.size() ? style.get(i) : null;
 				}
 			}
 		}
+
 		String html = doc.html();
 		String[] lignes = html.split("\n");
 		boolean isList = false, isUl = false;
@@ -54,7 +66,7 @@ public class CreationPuce extends Action {
 				lignes[i] = "</ul>" + lignes[i];
 				isList = false;
 			}
-			
+
 			if (lignes[i].contains("</ul>"))
 				isUl = false;
 		}
@@ -64,5 +76,29 @@ public class CreationPuce extends Action {
 		}
 		doc = Jsoup.parse(html);
 		return doc;
+	}
+
+	private String getPuce(String text){
+		int index = -1;
+		for (String string : puces) {
+			if (text.contains(string))
+				index = text.indexOf(string);
+		}
+		if (text.matches("^è[A-Z].*"))
+			index = text.indexOf("è");
+		return text.substring(index, index+1);
+	}
+
+	private boolean containsPuce(String text){
+		for (String string : puces) {
+			if (text.contains(string) && !string.equals("-"))
+				return true;
+			else if (text.startsWith("-") && text.startsWith("&nbsp;-"))
+				return true;
+		}
+		if (text.matches("^è[A-Z].*")){
+			return true;
+		}
+		return false;
 	}
 }

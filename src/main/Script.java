@@ -1,35 +1,30 @@
 package main;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Observable;
 
 import javax.swing.JOptionPane;
 
-import actions.ChangerStyle;
-import actions.ChoixFeuilleStyle;
-import actions.ChoixPagePrincipale;
-import actions.ColorationPuces;
-import actions.CreationPuce;
-import actions.Lien;
-import actions.Style;
-import actions.SupprimerBalise;
-import actions.SupprimerTitre;
-import actions.Titre;
-import interfaces.LancerAction;
+import interfaces.Action;
+import interfaces.LongTask;
 import interfaces.NeedSelectionFichiers;
 import vues.ChoixFichiers;
+import vues.ProgressBar;
 import vues.ScriptChooser;
 
-public class Script extends Observable implements NeedSelectionFichiers{
+public class Script extends Observable implements NeedSelectionFichiers, LongTask{
 
-	private ArrayList<LancerAction> actions;
+	private ArrayList<Action> actions;
 	private ArrayList<File> files, ppFiles, cssFiles;
 	private ScriptChooser scriptChooser;
 	private boolean running;
+	private Principale principale;
 
-	public Script(ArrayList<File> files) {
-		this.actions = new ArrayList<LancerAction>();
+	public Script(ArrayList<File> files, Principale principale) {
+		this.actions = new ArrayList<Action>();
 		this.files = new ArrayList<File>();
 		this.cssFiles = new ArrayList<File>();
 		this.ppFiles = new ArrayList<File>();
@@ -41,14 +36,18 @@ public class Script extends Observable implements NeedSelectionFichiers{
 			this.files.add(file);
 		}
 		this.running = false;
+		this.principale = principale;
 	}
 
 	public void runActions(){
-		for (LancerAction lancerAction : actions) {
-			lancerAction.lancerAction(files);
-			lancerAction.lancerActionAll();
+		Thread th;
+		for (Action lancerAction : actions) {
+			lancerAction.fichiersSelectionnes(files);
+//			th = new Thread(lancerAction);
+//			th.start();
+//			new ProgressBar(lancerAction);
+			lancerAction.run();		
 		}
-		Principale.messageFin("Script fini");
 	}
 	
 	@Override
@@ -89,6 +88,7 @@ public class Script extends Observable implements NeedSelectionFichiers{
 		scriptChooser = new ScriptChooser(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void choisirActionHelper(){
 		scriptChooser.dispose();
 		ArrayList<File> fileEtCssEtHtt = new ArrayList<File>();
@@ -96,50 +96,29 @@ public class Script extends Observable implements NeedSelectionFichiers{
 		fileEtCssEtHtt.addAll(cssFiles);
 		fileEtCssEtHtt.addAll(ppFiles);
 		for (String string : scriptChooser.getActionsChoisies()) {
-			switch (string) {
-			case "Choix page principale":
-				actions.add(new ChoixPagePrincipale(fileEtCssEtHtt));
-				break;
-			case "Changement d'une classe CSS":
-				actions.add(new ChangerStyle(fileEtCssEtHtt));
-				break;
-			case "Choix d'une feuille de style":
-				actions.add(new ChoixFeuilleStyle(fileEtCssEtHtt));
-				break;
-			case "Coloration des puces":
-				actions.add(new ColorationPuces(fileEtCssEtHtt));
-				break;
-			case "Application d'un style à un mot":
-				actions.add(new Style(fileEtCssEtHtt));
-				break;
-			case "Supprimer une balise":
-				actions.add(new SupprimerBalise(fileEtCssEtHtt));
-				break;
-			case "Remplacer les titres":
-				actions.add(new Titre(fileEtCssEtHtt));
-				break;
-			case "Création des puces":
-				actions.add(new CreationPuce(fileEtCssEtHtt));
-				break;
-			case "Création des liens":
-				actions.add(new Lien(fileEtCssEtHtt));
-				break;
-			case "Supprimer les titres":
-				actions.add(new SupprimerTitre(fileEtCssEtHtt));
-				break;
-			default:
-				System.err.println("Erreur Script, choix inconnu");
-				break;
+			for (Action a : principale.getScripts()) {
+				if (string.equals(a.getIntitule())) {
+					Class<Action> action;
+					try {
+						action = (Class<Action>) Class.forName(a.getClass().getName());
+						Constructor<Action> constructeur = action.getConstructor(new Class[] {
+								Class.forName("java.util.ArrayList")
+						});
+						this.actions.add(constructeur.newInstance(fileEtCssEtHtt));
+					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		runActions();
 	}
 
-	public ArrayList<LancerAction> getActions() {
+	public ArrayList<Action> getActions() {
 		return actions;
 	}
 
-	public void setActions(ArrayList<LancerAction> actions) {
+	public void setActions(ArrayList<Action> actions) {
 		this.actions = actions;
 	}
 
@@ -164,6 +143,14 @@ public class Script extends Observable implements NeedSelectionFichiers{
 	@Override
 	public void onDispose() {
 		// Ne rien faire
+	}
+
+	public Principale getPrincipale() {
+		return principale;
+	}
+
+	public void setPrincipale(Principale principale) {
+		this.principale = principale;
 	}
 
 }

@@ -48,7 +48,7 @@ public class ListeFichier extends JScrollPane implements Observer{
 			remove();
 		}
 
-		String[] filtre = {"htm", "html", "htt", "css"};
+		String[] filtre = {"htm"};
 
 		this.filtres = new ArrayList<String>();
 		for (String string : filtre) {

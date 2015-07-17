@@ -15,10 +15,13 @@ import interfaces.Action;
 
 public class ColorationPuces extends Action {
 
+	ArrayList<String> sansPP;
+	
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
 		intitule = "Colorer les puces";
 		messageFin = "Coloration des puces finies";
+		sansPP = new ArrayList<String>();
 	}
 	
 	@Override
@@ -27,8 +30,13 @@ public class ColorationPuces extends Action {
 	}	
 
 	@Override
-	protected Document applyStyle(Document doc) throws IOException {
-		String couleur = getCouleur(doc);
+	protected Document applyStyle(Document doc) throws IOException, NullPointerException {
+		String couleur = "#ffffff";
+		try {
+			couleur = getCouleur(doc);
+		} catch (NullPointerException e) {
+			throw new NullPointerException();
+		}
 		
 		Elements puces = doc.select("li");
 		
@@ -45,7 +53,7 @@ public class ColorationPuces extends Action {
 		return doc;
 	}
 	
-	private String getCouleur(Document doc) throws IOException {
+	private String getCouleur(Document doc) throws IOException, NullPointerException {
 		Elements pp = doc.select("meta[name=template]");
 		if (pp.size() > 0){
 			String path = getAbsolutePathPP(pp.first().attr("content"));
@@ -79,5 +87,13 @@ public class ColorationPuces extends Action {
 			}
 		}
 		return null;
+	}
+
+	public ArrayList<String> getSansPP() {
+		return sansPP;
+	}
+
+	public void setSansPP(ArrayList<String> sansPP) {
+		this.sansPP = sansPP;
 	}
 }

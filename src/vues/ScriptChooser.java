@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
+import interfaces.Action;
 import main.Script;
 
 public class ScriptChooser extends JFrame {
@@ -44,12 +45,9 @@ public class ScriptChooser extends JFrame {
 	}
 	
 	private void init(){
-		String[] act = {"Choix page principale", "Changement d'une classe CSS", "Choix d'une feuille de style", "Coloration des puces", 
-				"Application d'un style à un mot", "Supprimer une balise", "Remplacer les titres", "Création des puces", "Création des liens", "Supprimer les titres"
-		};
 		actionsModel = new DefaultListModel<String>();
-		for (String string : act) {
-			actionsModel.addElement(string);
+		for (Action a : script.getPrincipale().getScripts()) {
+			actionsModel.addElement(a.getIntitule());
 		}
 		actions = new JList<String>(actionsModel);
 		actions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

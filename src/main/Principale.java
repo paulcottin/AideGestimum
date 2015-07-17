@@ -21,6 +21,7 @@ import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
 import actions.CreationPuce;
 import actions.Lien;
+import actions.NettoyagePagePrincipale;
 import actions.Style;
 import actions.SupprStyleTitre;
 import actions.SupprimerTitre;
@@ -48,7 +49,7 @@ public class Principale extends Observable {
 
 		listerRepertoire(topics);
 
-		script = new Script(files);
+		script = new Script(files, this);
 		scripts = new ArrayList<Action>();
 		initActions();
 
@@ -60,7 +61,6 @@ public class Principale extends Observable {
 		scripts.add(new Style(files));
 		scripts.add(new ChoixFeuilleStyle(files));
 		scripts.add(new ChoixPagePrincipale(files));
-		//		scripts.add(new SupprimerBalise(files));
 		scripts.add(new AssociationAuto(files));
 		scripts.add(new ColorationPuces(files));
 		scripts.add(new ChangerStyle(files));
@@ -69,6 +69,7 @@ public class Principale extends Observable {
 		scripts.add(new Lien(files));
 		scripts.add(new SupprimerTitre(files));
 		scripts.add(new SupprStyleTitre(files));
+		scripts.add(new NettoyagePagePrincipale(files));
 	}
 
 	private String getTopicsPath(){
