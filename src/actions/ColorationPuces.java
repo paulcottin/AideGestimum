@@ -11,11 +11,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.NoPPDefine;
 import interfaces.Action;
 
 public class ColorationPuces extends Action {
 
 	ArrayList<String> sansPP;
+	NoPPDefine noPPDefine = new NoPPDefine();
 	
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
@@ -35,7 +37,7 @@ public class ColorationPuces extends Action {
 		try {
 			couleur = getCouleur(doc);
 		} catch (NullPointerException e) {
-			throw new NullPointerException();
+			noPPDefine.add(doc.title());
 		}
 		
 		Elements puces = doc.select("li");
@@ -95,5 +97,13 @@ public class ColorationPuces extends Action {
 
 	public void setSansPP(ArrayList<String> sansPP) {
 		this.sansPP = sansPP;
+	}
+
+	public NoPPDefine getNoPPDefine() {
+		return noPPDefine;
+	}
+
+	public void setNoPPDefine(NoPPDefine noPPDefine) {
+		this.noPPDefine = noPPDefine;
 	}
 }

@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class ChoixFeuilleStyle extends Action {
@@ -31,7 +32,7 @@ public class ChoixFeuilleStyle extends Action {
 	}
 
 	@Override
-	public void parametrer() {
+	public void parametrer() throws ParametrageError {
 		// TODO Auto-generated method stub
 		stylePath = cssFile("Paramétrage", "Quelle feuille de style").getAbsolutePath();
 	}

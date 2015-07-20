@@ -3,18 +3,17 @@ package actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class ChoixPagePrincipale extends Action {
 
-	private String page, pagePath;
+	private String pagePath;
 
 	public ChoixPagePrincipale(ArrayList<File> files) {
 		super(files);
@@ -23,27 +22,8 @@ public class ChoixPagePrincipale extends Action {
 	}
 
 	@Override
-	public void parametrer(){
-		getPagePrincipales();
-	}
-
-	private void getPagePrincipales(){
-		String[] pp = new String[ppFiles.size()];
-		for (int i = 0; i < ppFiles.size(); i++) {
-			pp[i] = ppFiles.get(i).getName();
-		}
-
-		page =	(String) JOptionPane.showInputDialog(null, 
-				"Quel page principale voulez-vous appliquer",
-				"Modification de la page principale",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				pp, pp[0]);
-		ArrayList<String> tmp = new ArrayList<String>();
-		for (File file: ppFiles) {
-			tmp.add(file.getName());
-		}
-		pagePath = ppFiles.get(tmp.indexOf(page)).getPath();
+	public void parametrer() throws ParametrageError{
+		pagePath = getPPPath();
 	}
 
 	@Override
@@ -85,14 +65,6 @@ public class ChoixPagePrincipale extends Action {
 
 	public void setHtmlFiles(ArrayList<File> htmlFiles) {
 		this.htmlFiles = htmlFiles;
-	}
-
-	public String getPage() {
-		return page;
-	}
-
-	public void setPage(String page) {
-		this.page = page;
 	}
 
 	public String getPagePath() {

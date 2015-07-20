@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 import main.Principale;
 
@@ -34,18 +35,22 @@ public class AssociationAuto extends Action {
 	}
 
 	@Override
-	public void parametrer(){
-		getSourceFile();
+	public void parametrer() throws ParametrageError{
 		try {
-			checkEncodage();
-		} catch (FileSystemException e) {
-			e.printStackTrace();
+			getSourceFile();
+			try {
+				checkEncodage();
+			} catch (FileSystemException e) {
+				e.printStackTrace();
+			}
+			getPathAndPP();
+			displayPP();
+		} catch (ParametrageError e) {
+			throw e;
 		}
-		getPathAndPP();
-		displayPP();
 	}
 
-	private void getSourceFile() {
+	private void getSourceFile() throws ParametrageError {
 		JOptionPane.showMessageDialog(null, "<html>Veuillez sélectionner le fichier csv (séparateur ';') contenant les liens<br/>"
 				+ "Ce fichier doit être sans en-tête, les chemins à gauche, les pages principales à droite</html>");
 		JFileChooser fileChooser = new JFileChooser();
@@ -53,7 +58,7 @@ public class AssociationAuto extends Action {
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
 			sourceFile = fileChooser.getSelectedFile();
 		else
-			sourceFile = null;
+			throw new ParametrageError("Il faut sélectionner un fichier csv valide !");
 	}
 
 	private void getPathAndPP(){		

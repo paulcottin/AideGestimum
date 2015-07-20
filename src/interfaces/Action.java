@@ -18,6 +18,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import actions.ColorationPuces;
+import exceptions.ParametrageError;
 import main.Principale;
 
 public abstract class Action extends Observable implements LancerAction{
@@ -49,7 +51,11 @@ public abstract class Action extends Observable implements LancerAction{
 
 	@Override
 	public void run() {
-		lancerActionAll();
+		try {
+			lancerActionAll();
+		} catch (ParametrageError e) {
+			e.printMessage();
+		}
 		running = false;
 		update();
 	}
@@ -70,7 +76,7 @@ public abstract class Action extends Observable implements LancerAction{
 
 
 	@Override
-	public void lancerActionAll() {
+	public void lancerActionAll() throws ParametrageError{
 		parametrer();
 		running = true;
 		update();
@@ -86,7 +92,19 @@ public abstract class Action extends Observable implements LancerAction{
 				}
 			}
 		}
-		Principale.messageFin(messageFin);
+		if (this instanceof ColorationPuces) {
+			ArrayList<String> list = ((ColorationPuces) this).getNoPPDefine().getPages();
+			if (list.size() > 0) {
+				String msg = "Ces pages n'ont pas de page principale.<br/>Coloration des puces impossible !<br/><ul>";
+				for (String string : list) {
+					msg += "<li>"+string+"</li>";
+				}
+				msg += "</ul>";
+				Principale.messageFin(msg);
+			}else
+				Principale.messageFin(messageFin);
+		}else
+			Principale.messageFin(messageFin);
 	}
 
 	private void applyStyleHelper(File file) throws IOException{
@@ -138,9 +156,9 @@ public abstract class Action extends Observable implements LancerAction{
 
 
 	@Override
-	public abstract void parametrer();
+	public abstract void parametrer() throws ParametrageError;
 
-	protected File cssFile(String titre, String message){
+	protected File cssFile(String titre, String message) throws ParametrageError{
 		String cssFilePath = null;
 		String[] cssFiles = new String[this.cssFiles.size()];
 		for (int i = 0; i < this.cssFiles.size(); i++) {
@@ -154,15 +172,19 @@ public abstract class Action extends Observable implements LancerAction{
 				null,
 				cssFiles, cssFiles[0]);
 
+		if (cssFilePath == null)
+			throw new ParametrageError("Il faut sélectionner une feuille de style !");
+
 		ArrayList<String> tmp = new ArrayList<String>();
 		for (String string : cssFiles) {
 			tmp.add(string);
 		}
+
 		cssFilePath = this.cssFiles.get(tmp.indexOf(cssFilePath)).getAbsolutePath();
 		return new File(cssFilePath);
 	}
 
-	protected String cssClass(File file, String titre, String message){
+	protected String cssClass(File file, String titre, String message) throws ParametrageError{
 		String[] styles = afficheCSSClasses(getCssClass(file));
 		String style =	(String) JOptionPane.showInputDialog(null, 
 				message,
@@ -171,6 +193,9 @@ public abstract class Action extends Observable implements LancerAction{
 				null,
 				styles, styles[0]);
 
+		if (style == null)
+			throw new ParametrageError("Il faut sélectionner une classe CSS ! ");
+		
 		style = getCSSBalise(style);
 		return style;
 	}
@@ -223,6 +248,31 @@ public abstract class Action extends Observable implements LancerAction{
 				styles[i] = classes.get(i);
 		}
 		return styles;
+	}
+
+	protected String getPPPath() throws ParametrageError{
+		String[] pp = new String[ppFiles.size()];
+		for (int i = 0; i < ppFiles.size(); i++) {
+			pp[i] = ppFiles.get(i).getName();
+		}
+
+		String page =	(String) JOptionPane.showInputDialog(null, 
+				"Quel page principale voulez-vous appliquer",
+				"Modification de la page principale",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				pp, pp[0]);
+		
+		if (page == null)
+			throw new ParametrageError("Il faut sélectionner une page principale !");
+		
+		ArrayList<String> tmp = new ArrayList<String>();
+		for (File file: ppFiles) {
+			tmp.add(file.getName());
+		}
+
+		String path = ppFiles.get(tmp.indexOf(page)).getPath();
+		return path;
 	}
 
 	protected boolean isCleannable(Element element){

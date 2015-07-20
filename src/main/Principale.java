@@ -166,7 +166,7 @@ public class Principale extends Observable {
 	}
 
 	public static void messageFin(String message){
-		JOptionPane.showMessageDialog(null, message);
+		JOptionPane.showMessageDialog(null, "<html>"+message+"</html>");
 	}
 
 	public static void main(String[] args){

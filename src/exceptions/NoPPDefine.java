@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class NoPPDefine extends MyException{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<String> pages;
 	
 	public NoPPDefine() {
@@ -29,6 +33,10 @@ public class NoPPDefine extends MyException{
 
 	public void setPages(ArrayList<String> pages) {
 		this.pages = pages;
+	}
+	
+	public void add(String page){
+		this.pages.add(page);
 	}
 
 }

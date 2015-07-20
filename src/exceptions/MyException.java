@@ -10,17 +10,25 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
-public abstract class MyException {
+import org.omg.PortableServer.ThreadPolicyOperations;
 
+public abstract class MyException extends Throwable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected String message;
 	protected File log;
 	
 	public MyException() {
+		super();
 		this.message = "";
 		this.log = new File("log.html");
 	}
 	
 	public MyException(String message){
+		super(message);
 		this.message = message;
 		this.log = new File("log.html");
 	}
@@ -29,6 +37,7 @@ public abstract class MyException {
 		writeLog();
 		JOptionPane.showMessageDialog(null, "<html>"+message+"<br/> "
 				+ "(Fichier \"log.html\" créé dans le répertoire du jar pour l'historique des erreurs)</html>", "Erreur", JOptionPane.ERROR_MESSAGE);
+//		super.printStackTrace();
 	}
 	
 	private void writeLog(){

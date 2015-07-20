@@ -1,17 +1,14 @@
 package actions;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class ChangerStyle extends Action {
@@ -28,7 +25,7 @@ public class ChangerStyle extends Action {
 	}
 	
 	@Override
-	public void parametrer(){
+	public void parametrer() throws ParametrageError{
 		correspondaceStyles();
 	}
 	
@@ -94,54 +91,13 @@ public class ChangerStyle extends Action {
 
 	/**
 	 * On demande à l'utilisateur quelles feuilles de styles il choisit et quelle classe dans ces feuilles
+	 * @throws ParametrageError 
 	 */
-	private void correspondaceStyles(){
-		String cssFilePath1 = null, cssFilePath2 = null;
-		String[] cssFiles = new String[this.cssFiles.size()];
-		for (int i = 0; i < this.cssFiles.size(); i++) {
-			cssFiles[i] = this.cssFiles.get(i).getName();
-		}
+	private void correspondaceStyles() throws ParametrageError{
+		oldStyle = cssClass(cssFile("Paramétrage", "Feuille de style de départ"), "Paramétrage", "Classe de départ");
 		
-		cssFilePath1 =	(String) JOptionPane.showInputDialog(null, 
-				"Choisir la feuille de style de départ",
-				"Changement de style",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				cssFiles, cssFiles[0]);
+		newStyle = cssClass(cssFile("Paramétrage", "Feuille de style d'arrivée"), "Paramétrage", "Classe d'arrivée");
 		
-		cssFilePath2 =	(String) JOptionPane.showInputDialog(null, 
-				"Choisir la feuille de style d'arrivée",
-				"Changement de style",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				cssFiles, cssFiles[0]);
-		
-		ArrayList<String> tmp = new ArrayList<String>();
-		for (String string : cssFiles) {
-			tmp.add(string);
-		}
-		cssFilePath1 = this.cssFiles.get(tmp.indexOf(cssFilePath1)).getPath();
-		cssFilePath2 = this.cssFiles.get(tmp.indexOf(cssFilePath2)).getPath();
-		
-		String[] styles = afficheCSSClasses(getCSSclasses(new File(cssFilePath1)));
-		oldStyle =	(String) JOptionPane.showInputDialog(null, 
-				"Style de départ",
-				"Changement de style",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				styles, styles[0]);
-		
-		oldStyle = getCSSBalise(oldStyle);
-
-		styles = afficheCSSClasses(getCSSclasses(new File(cssFilePath2)));
-		newStyle =	(String) JOptionPane.showInputDialog(null, 
-				"Style d'arrivée",
-				"Changement de style",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				styles, styles[0]);
-		
-		newStyle = getCSSBalise(newStyle);
 	}
 	
 	/**
@@ -160,48 +116,6 @@ public class ChangerStyle extends Action {
 				styles[i] = classes.get(i);
 		}
 		return styles;
-	}
-	
-	/**
-	 * D'un titre affiché donne le nom de la balise ou de la classe CSS
-	 * @param classeAffichee
-	 * @return
-	 */
-	private String getCSSBalise(String classeAffichee){
-		if (classeAffichee.equals("Normal"))
-			return "p";
-		else if (classeAffichee.matches("Titre [0-9]"))
-			return "H"+classeAffichee.substring("Titre ".length());
-		else
-			return classeAffichee;
-	}
-
-	/**
-	 * Récupère les classes/balises d'un document CSS
-	 * @param cssFile
-	 * @return
-	 */
-	private ArrayList<String> getCSSclasses(File cssFile){
-		ArrayList<String> reponse = new ArrayList<String>();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(cssFile));
-
-			String ligne = "";
-			while((ligne = br.readLine()) != null){
-				if (ligne.contains("{")) {
-					String classe = ligne.substring(0, ligne.indexOf("{")-1);
-					if (classe.contains("."))
-						classe = classe.split("\\.")[1];
-					reponse.add(classe);
-				}
-			}
-
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return reponse;
 	}
 
 	/**

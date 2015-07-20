@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class Copyright extends Action {
@@ -38,8 +39,10 @@ public class Copyright extends Action {
 	}
 
 	@Override
-	public void parametrer() {
+	public void parametrer() throws ParametrageError {
 		copyright = JOptionPane.showInputDialog(null, "Quel copyright voulez-vous appliquer ?", "Paramétrage", JOptionPane.QUESTION_MESSAGE);
+		if (copyright == null || copyright.equals(""))
+			throw new ParametrageError("Il faut donner un copyright non vide !");
 	}
 
 }

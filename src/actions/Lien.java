@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class Lien extends Action{
@@ -40,7 +41,7 @@ public class Lien extends Action{
 	}
 
 	@Override
-	public void parametrer() {
+	public void parametrer() throws ParametrageError {
 		String c = cssClass(cssFile("Paramétrage", "Veuillez donner la feuille de style"), "Paramétrage", "Quelle classe pour les liens ?");
 		if (c != null)
 			classe = c;
