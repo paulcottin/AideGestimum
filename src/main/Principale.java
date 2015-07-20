@@ -24,6 +24,7 @@ import actions.CreationPuce;
 import actions.Lien;
 import actions.NettoyagePagePrincipale;
 import actions.NettoyageTitre;
+import actions.NoPP;
 import actions.Style;
 import actions.SupprStyleTitre;
 import actions.SupprimerTitre;
@@ -74,6 +75,7 @@ public class Principale extends Observable {
 		scripts.add(new NettoyagePagePrincipale(files));
 		scripts.add(new NettoyageTitre(files));
 		scripts.add(new Copyright(files));
+		scripts.add(new NoPP(files));
 	}
 
 	private String getTopicsPath(){

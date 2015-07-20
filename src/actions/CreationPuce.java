@@ -94,7 +94,7 @@ public class CreationPuce extends Action {
 		for (String string : puces) {
 			if (text.contains(string) && !string.equals("-"))
 				return true;
-			else if (text.startsWith("-") && text.startsWith("&nbsp;-"))
+			else if (text.startsWith("-") || text.startsWith("&nbsp;-"))
 				return true;
 		}
 		if (text.matches("^è[A-Z].*")){
