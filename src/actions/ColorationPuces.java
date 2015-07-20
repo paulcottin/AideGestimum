@@ -14,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import exceptions.NoPPDefine;
+import exceptions.ParametrageError;
 import interfaces.Action;
 
 public class ColorationPuces extends Action {
@@ -31,14 +32,16 @@ public class ColorationPuces extends Action {
 	}
 	
 	@Override
-	public void parametrer() {	
+	public void parametrer() throws ParametrageError {	
 		 String[] couleur = {"Orange", "Thématique"};
 		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[1]);
-		    if (nom.equals("Orange")) {
-		    	isOrange = true;
-		    }else{
-		    	isOrange = false;				
-			}
+		    if (nom != null) {
+		    	if (nom.equals("Orange")) 
+			    	isOrange = true;
+			    else
+			    	isOrange = false;				
+			}else
+				throw new ParametrageError("Il faut sélectionner une couleur !");
 	}
 
 	private Document applyThematique(Document doc) throws IOException, NullPointerException {
@@ -74,7 +77,7 @@ public class ColorationPuces extends Action {
 			}
 			element.attr("style", "color: "+couleur);
 			if (isCleannable(element)) {
-				element.html("<p>"+element.text()+"</p>");
+				element.html("<p style=\"color:black;\">"+element.text()+"</p>");
 			}
 		}
 		
