@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import actions.ColorationPuces;
+import actions.NoPP;
 import exceptions.ParametrageError;
 import main.Principale;
 
@@ -96,6 +97,18 @@ public abstract class Action extends Observable implements LancerAction{
 			ArrayList<String> list = ((ColorationPuces) this).getNoPPDefine().getPages();
 			if (list.size() > 0) {
 				String msg = "Ces pages n'ont pas de page principale.<br/>Coloration des puces impossible !<br/><ul>";
+				for (String string : list) {
+					msg += "<li>"+string+"</li>";
+				}
+				msg += "</ul>";
+				Principale.messageFin(msg);
+			}else
+				Principale.messageFin(messageFin);
+		}
+		else if (this instanceof NoPP) {
+			ArrayList<String> list = ((NoPP) this).getException().getPages();
+			if (list.size() > 0) {
+				String msg = "Ces pages n'ont pas de page principale !<br/><ul>";
 				for (String string : list) {
 					msg += "<li>"+string+"</li>";
 				}

@@ -49,7 +49,7 @@ public class Fenetre extends JFrame implements Observer{
 	}
 	
 	private void initWin(){
-		this.setSize(500, 600);
+		this.setSize(500, 700);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setJMenuBar(new vues.MenuBar(principale));

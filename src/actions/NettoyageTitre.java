@@ -22,7 +22,7 @@ public class NettoyageTitre extends Action {
 	protected Document applyStyle(Document doc) throws IOException {
 		Elements h = doc.select("h1");
 		for (Element element : h) {
-			if (element.text().matches(".* [a-z]+[A-Z][a-z]*.*")) {
+			if (element.text().matches("(.* |^.*)[a-z]+[A-Z][a-z]*.*")) {
 				String[] tab = separeTitre(element.text());
 				element.text(tab[0]);
 				element.after("<p>"+tab[1]+"</p>");
@@ -54,7 +54,6 @@ public class NettoyageTitre extends Action {
 		String texte = tab[sep].substring(index, tab[sep].length()) +" ";
 		for (int i = sep+1; i < tab.length; i++)
 			texte += tab[i] +" ";
-		
 		String[] result = {titre, texte};
 		return result;
 	}
