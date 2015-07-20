@@ -3,7 +3,6 @@ package actions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +12,7 @@ import interfaces.Action;
 
 public class ChoixFeuilleStyle extends Action {
 
-	private String style, stylePath;
+	private String stylePath;
 	public ChoixFeuilleStyle(ArrayList<File> files){
 		super(files);
 		intitule = "Choix d'une feuille de style";

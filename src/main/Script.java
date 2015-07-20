@@ -12,7 +12,6 @@ import interfaces.Action;
 import interfaces.LongTask;
 import interfaces.NeedSelectionFichiers;
 import vues.ChoixFichiers;
-import vues.ProgressBar;
 import vues.ScriptChooser;
 
 public class Script extends Observable implements NeedSelectionFichiers, LongTask{
@@ -40,7 +39,6 @@ public class Script extends Observable implements NeedSelectionFichiers, LongTas
 	}
 
 	public void runActions(){
-		Thread th;
 		for (Action lancerAction : actions) {
 			lancerAction.fichiersSelectionnes(files);
 //			th = new Thread(lancerAction);

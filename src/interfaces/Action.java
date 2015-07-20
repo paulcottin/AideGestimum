@@ -3,9 +3,12 @@ package interfaces;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -24,7 +27,7 @@ public abstract class Action extends Observable implements LancerAction{
 	protected String messageFin;
 	protected String intitule;
 	private ArrayList<String> baliseASauver;
-	
+
 	public Action(ArrayList<File> files) {
 		htmlFiles = new ArrayList<File>();
 		cssFiles = new ArrayList<File>();
@@ -37,7 +40,7 @@ public abstract class Action extends Observable implements LancerAction{
 			else if (file.getAbsolutePath().endsWith(".htt"))
 				ppFiles.add(file);
 		}
-		
+
 		this.running = false;
 		baliseASauver = new ArrayList<String>();
 		initBaliseASauver();
@@ -72,40 +75,59 @@ public abstract class Action extends Observable implements LancerAction{
 		running = true;
 		update();
 		for (File file : htmlFiles) {
-			try {
-				applyStyleHelper(file);
-			} catch (IOException e) {
-				e.printStackTrace();
+			synchronized (file) {
+				System.out.println(intitule+" : "+file.getName());
+				try {
+					applyStyleHelper(file);
+				} catch (NullPointerException e) {
+					System.out.println("erreur : "+file.getAbsolutePath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		Principale.messageFin(messageFin);
 	}
-	
+
 	private void applyStyleHelper(File file) throws IOException{
-		File tmp = new File("tmp");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(tmp));
+		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		File tmp = new File(generateString(5, chars));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8"));
 		String ligne = "", txt = "";
-		
+
 		while ((ligne = br.readLine()) != null){
 			txt += ligne+"\r\n";
 		}
-		
+
 		Document doc = Jsoup.parse(txt);
 		doc = applyStyle(doc);
 		String html = doc.html();
 
 		html = html.replace("<!--?", "<?");
 		html = html.replace("?-->", "?>");
-		
+
 		bw.write(html);
 		br.close();
 		bw.close();
 
-		Principale.fileMove(tmp, file);
-		tmp.delete();
+		synchronized (tmp) {
+			synchronized (file) {
+				Principale.fileMove(tmp, file);
+				tmp.delete();
+			}
+		}
 	}
-	
+
+	private String generateString(int length, String chars) {
+		StringBuilder  pass = new StringBuilder (chars.length());
+		for (int x = 0; x < length; x++) {
+			int i = (int) (Math.random() * chars.length());
+			pass.append(chars.charAt(i));
+		}
+		return pass.toString();
+	}
+
 	protected abstract Document applyStyle(Document doc) throws IOException;
 
 
@@ -117,21 +139,21 @@ public abstract class Action extends Observable implements LancerAction{
 
 	@Override
 	public abstract void parametrer();
-	
+
 	protected File cssFile(String titre, String message){
 		String cssFilePath = null;
 		String[] cssFiles = new String[this.cssFiles.size()];
 		for (int i = 0; i < this.cssFiles.size(); i++) {
-			cssFiles[i] = this.cssFiles.get(i).getName();
+			cssFiles[i] = this.cssFiles.get(i).getPath();
 		}
-		
+
 		cssFilePath =	(String) JOptionPane.showInputDialog(null, 
 				message,
 				titre,
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				cssFiles, cssFiles[0]);
-		
+
 		ArrayList<String> tmp = new ArrayList<String>();
 		for (String string : cssFiles) {
 			tmp.add(string);
@@ -139,7 +161,7 @@ public abstract class Action extends Observable implements LancerAction{
 		cssFilePath = this.cssFiles.get(tmp.indexOf(cssFilePath)).getAbsolutePath();
 		return new File(cssFilePath);
 	}
-	
+
 	protected String cssClass(File file, String titre, String message){
 		String[] styles = afficheCSSClasses(getCssClass(file));
 		String style =	(String) JOptionPane.showInputDialog(null, 
@@ -148,11 +170,11 @@ public abstract class Action extends Observable implements LancerAction{
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				styles, styles[0]);
-		
+
 		style = getCSSBalise(style);
 		return style;
 	}
-	
+
 	private ArrayList<String> getCssClass(File file) {
 		ArrayList<String> reponse = new ArrayList<String>();
 
@@ -175,7 +197,7 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 		return reponse;
 	}
-	
+
 	/**
 	 * D'un titre affiché donne le nom de la balise ou de la classe CSS
 	 * @param classeAffichee
@@ -189,7 +211,7 @@ public abstract class Action extends Observable implements LancerAction{
 		else
 			return classeAffichee;
 	}
-	
+
 	private String[] afficheCSSClasses(ArrayList<String> classes){
 		String[] styles = new String[classes.size()];
 		for (int i = 0; i < classes.size(); i++) {
@@ -202,7 +224,7 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 		return styles;
 	}
-	
+
 	protected boolean isCleannable(Element element){
 		boolean clean = true;
 		for (Element e : element.getAllElements()) {
@@ -211,22 +233,24 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 		return clean;
 	}
-	
-		private void initBaliseASauver(){
-			baliseASauver.add("img");
-			baliseASauver.add("a");
-			baliseASauver.add("ul");
-			baliseASauver.add("li");
-			baliseASauver.add("h1");
-			baliseASauver.add("H1");
-			baliseASauver.add("h2");
-			baliseASauver.add("H2");
-			baliseASauver.add("h3");
-			baliseASauver.add("H3");
-			baliseASauver.add("h4");
-			baliseASauver.add("H4");
-		}
-	
+
+	private void initBaliseASauver(){
+		baliseASauver.add("img");
+		baliseASauver.add("a");
+		baliseASauver.add("ul");
+		baliseASauver.add("li");
+		baliseASauver.add("h1");
+		baliseASauver.add("H1");
+		baliseASauver.add("h2");
+		baliseASauver.add("H2");
+		baliseASauver.add("h3");
+		baliseASauver.add("H3");
+		baliseASauver.add("h4");
+		baliseASauver.add("H4");
+		baliseASauver.add("tr");
+		baliseASauver.add("td");
+	}
+
 	@Override
 	public boolean isRunning() {
 		return running;
@@ -243,7 +267,7 @@ public abstract class Action extends Observable implements LancerAction{
 	public void onDispose() {
 		//Ne rien faire
 	}
-	
+
 	protected void update(){
 		setChanged();
 		notifyObservers();

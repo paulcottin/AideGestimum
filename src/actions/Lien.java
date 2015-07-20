@@ -27,12 +27,14 @@ public class Lien extends Action{
 		Elements links = doc.select("a[href]");
 		
 		for (Element element : links) {
+			String href = element.attr("href");
 			for (Attribute a : element.attributes()) 
 				element.removeAttr(a.getKey());
 			for (String s : element.classNames()) {
 				element.removeClass(s);
 			}
 			element.addClass(classe);
+			element.attr("href", href);
 		}
 		return doc;
 	}
