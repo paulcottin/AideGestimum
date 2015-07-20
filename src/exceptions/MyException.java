@@ -10,8 +10,6 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
-import org.omg.PortableServer.ThreadPolicyOperations;
-
 public abstract class MyException extends Throwable {
 
 	/**
