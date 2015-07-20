@@ -23,7 +23,7 @@ public class SupprimerTitre extends Action {
 		Elements b = doc.select("body");
 		Element body = b.first();
 		
-		if (body.children().size() > 0) {
+		if (body.children().size() > 1) {
 			if (body.children().first().tagName().equals("h1") && body.child(1).tagName().equals("p")) {
 				body.children().first().remove();
 			}
