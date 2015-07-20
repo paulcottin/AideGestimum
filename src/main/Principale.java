@@ -19,6 +19,7 @@ import actions.ChangerStyle;
 import actions.ChoixFeuilleStyle;
 import actions.ChoixPagePrincipale;
 import actions.ColorationPuces;
+import actions.Copyright;
 import actions.CreationPuce;
 import actions.Lien;
 import actions.NettoyagePagePrincipale;
@@ -72,6 +73,7 @@ public class Principale extends Observable {
 		scripts.add(new SupprStyleTitre(files));
 		scripts.add(new NettoyagePagePrincipale(files));
 		scripts.add(new NettoyageTitre(files));
+		scripts.add(new Copyright(files));
 	}
 
 	private String getTopicsPath(){
