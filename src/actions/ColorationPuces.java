@@ -33,7 +33,12 @@ public class ColorationPuces extends Action {
 	@Override
 	public void parametrer() {	
 		 String[] couleur = {"Orange", "Thématique"};
-		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[2]);
+		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[1]);
+		    if (nom.equals("Orange")) {
+		    	isOrange = true;
+		    }else{
+		    	isOrange = false;				
+			}
 	}
 
 	private Document applyThematique(Document doc) throws IOException, NullPointerException {
