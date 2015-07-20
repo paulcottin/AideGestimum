@@ -29,6 +29,7 @@ import actions.Style;
 import actions.SupprStyleTitre;
 import actions.SupprimerTitre;
 import actions.Titre;
+import exceptions.NoRoboHelpProject;
 import interfaces.Action;
 import vues.Fenetre;
 
@@ -43,7 +44,7 @@ public class Principale extends Observable {
 	ArrayList<File> files;
 
 
-	public Principale(){
+	public Principale() throws NoRoboHelpProject{
 		files = new ArrayList<File>();
 		topics = new File(getTopicsPath());
 
@@ -51,6 +52,9 @@ public class Principale extends Observable {
 //		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
 
 		listerRepertoire(topics);
+		
+		if (!isRobotHelpProject())
+			throw new NoRoboHelpProject("Ce dossier ne contient pas de projet RoboHelp");
 
 		script = new Script(files, this);
 		scripts = new ArrayList<Action>();
@@ -107,6 +111,15 @@ public class Principale extends Observable {
 			else if (!listefichiers[i].isDirectory())
 				files.add(listefichiers[i]);
 		}
+	}
+	
+	private boolean isRobotHelpProject(){
+		boolean rep = false;
+		for (File file : files) {
+			if (file.getAbsolutePath().endsWith(".hhp") || file.getAbsolutePath().endsWith(".xpj"))
+				return true;
+		}
+		return false;
 	}
 
 	public void exportCSV() throws IOException{
@@ -172,9 +185,14 @@ public class Principale extends Observable {
 	}
 
 	public static void main(String[] args){
-		Principale p = new Principale();
-		@SuppressWarnings("unused")
-		Fenetre fen = new Fenetre(p);
+		Principale p;
+		try {
+			p = new Principale();
+			new Fenetre(p);
+		} catch (NoRoboHelpProject e) {
+			
+		}
+		
 	}
 
 	public ArrayList<File> getFiles() {
