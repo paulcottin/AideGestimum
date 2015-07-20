@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -18,21 +20,23 @@ public class ColorationPuces extends Action {
 
 	ArrayList<String> sansPP;
 	NoPPDefine noPPDefine = new NoPPDefine();
+	boolean isOrange;
 	
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
 		intitule = "Colorer les puces";
 		messageFin = "Coloration des puces finies";
 		sansPP = new ArrayList<String>();
+	
 	}
 	
 	@Override
-	public void parametrer() {
+	public void parametrer() {	
+		 String[] couleur = {"Orange", "Thématique"};
+		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[2]);
+	}
 
-	}	
-
-	@Override
-	protected Document applyStyle(Document doc) throws IOException, NullPointerException {
+	private Document applyThematique(Document doc) throws IOException, NullPointerException {
 		String couleur = "#ffffff";
 		try {
 			couleur = getCouleur(doc);
@@ -53,6 +57,31 @@ public class ColorationPuces extends Action {
 		}
 		
 		return doc;
+	}
+	
+	private Document applyOrange(Document doc) throws IOException, NullPointerException {
+		String couleur = "#ee6d0c";
+		Elements puces = doc.select("li");
+		
+		for (Element element : puces) {
+			for (Attribute a : element.attributes()) {
+				element.removeAttr(a.getKey());
+			}
+			element.attr("style", "color: "+couleur);
+			if (isCleannable(element)) {
+				element.html("<p>"+element.text()+"</p>");
+			}
+		}
+		
+		return doc;
+	}
+	@Override
+	protected Document applyStyle(Document doc) throws IOException, NullPointerException {
+		if (isOrange) {
+			return applyOrange(doc);
+		}else {
+			return applyThematique(doc);
+		}
 	}
 	
 	private String getCouleur(Document doc) throws IOException, NullPointerException {
