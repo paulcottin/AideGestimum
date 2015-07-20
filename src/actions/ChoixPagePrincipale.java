@@ -57,7 +57,6 @@ public class ChoixPagePrincipale extends Action {
 			isFooter = true;
 		if (pp.size() > 0)
 			isPP = true;
-		System.out.println("pp : "+isPP+", header : "+isHeader+", footer : "+isFooter);
 		if (isPP)
 			pp.first().attr("content", pagePath);
 		else {
@@ -69,7 +68,6 @@ public class ChoixPagePrincipale extends Action {
 			}
 			e.attr("name", "template");
 			e.attr("content", pagePath);
-			System.out.println(e.toString());
 			Elements head = doc.select("head");
 			Elements list = new Elements(e);
 			head.first().insertChildren(index, list);

@@ -22,6 +22,7 @@ import actions.ColorationPuces;
 import actions.CreationPuce;
 import actions.Lien;
 import actions.NettoyagePagePrincipale;
+import actions.NettoyageTitre;
 import actions.Style;
 import actions.SupprStyleTitre;
 import actions.SupprimerTitre;
@@ -70,6 +71,7 @@ public class Principale extends Observable {
 		scripts.add(new SupprimerTitre(files));
 		scripts.add(new SupprStyleTitre(files));
 		scripts.add(new NettoyagePagePrincipale(files));
+		scripts.add(new NettoyageTitre(files));
 	}
 
 	private String getTopicsPath(){
