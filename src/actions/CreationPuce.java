@@ -89,6 +89,8 @@ public class CreationPuce extends Action {
 		}
 		if (text.matches("^è[A-Z].*"))
 			index = text.indexOf("è");
+		else if (text.startsWith("o "))
+			index = text.indexOf("o");
 		return text.substring(index, index+1);
 	}
 
