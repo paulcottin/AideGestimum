@@ -114,7 +114,6 @@ public class Principale extends Observable {
 	}
 	
 	private boolean isRobotHelpProject(){
-		boolean rep = false;
 		for (File file : files) {
 			if (file.getAbsolutePath().endsWith(".hhp") || file.getAbsolutePath().endsWith(".xpj"))
 				return true;

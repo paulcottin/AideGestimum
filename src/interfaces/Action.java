@@ -213,7 +213,7 @@ public abstract class Action extends Observable implements LancerAction{
 		return style;
 	}
 
-	private ArrayList<String> getCssClass(File file) {
+	protected ArrayList<String> getCssClass(File file) {
 		ArrayList<String> reponse = new ArrayList<String>();
 
 		try {

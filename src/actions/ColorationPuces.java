@@ -1,7 +1,10 @@
 package actions;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -13,6 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import exceptions.NoCSSDefine;
 import exceptions.NoPPDefine;
 import exceptions.ParametrageError;
 import interfaces.Action;
@@ -22,19 +26,20 @@ public class ColorationPuces extends Action {
 	ArrayList<String> sansPP;
 	NoPPDefine noPPDefine = new NoPPDefine();
 	boolean isOrange;
+	String couleurTexte;
 	
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
 		intitule = "Colorer les puces";
 		messageFin = "Coloration des puces finies";
 		sansPP = new ArrayList<String>();
-	
+		
 	}
 	
 	@Override
 	public void parametrer() throws ParametrageError {	
 		 String[] couleur = {"Orange", "Thématique"};
-		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[1]);
+		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[0]);
 		    if (nom != null) {
 		    	if (nom.equals("Orange")) 
 			    	isOrange = true;
@@ -60,7 +65,7 @@ public class ColorationPuces extends Action {
 			}
 			element.attr("style", "color: "+couleur);
 			if (isCleannable(element)) {
-				element.html("<p>"+element.text()+"</p>");
+				element.html("<p style=\"color: "+couleurTexte+";\">"+element.text()+"</p>");
 			}
 		}
 		
@@ -70,14 +75,13 @@ public class ColorationPuces extends Action {
 	private Document applyOrange(Document doc) throws IOException, NullPointerException {
 		String couleur = "#ee6d0c";
 		Elements puces = doc.select("li");
-		
 		for (Element element : puces) {
 			for (Attribute a : element.attributes()) {
 				element.removeAttr(a.getKey());
 			}
 			element.attr("style", "color: "+couleur);
 			if (isCleannable(element)) {
-				element.html("<p style=\"color:black;\">"+element.text()+"</p>");
+				element.html("<p style=\"color: "+couleurTexte+";\">"+element.text()+"</p>");
 			}
 		}
 		
@@ -85,6 +89,11 @@ public class ColorationPuces extends Action {
 	}
 	@Override
 	protected Document applyStyle(Document doc) throws IOException, NullPointerException {
+		try {
+			couleurTexte = getCouleurTexte(doc);
+		} catch (NoCSSDefine e1) {
+			e1.printStackTrace();
+		}
 		if (isOrange) {
 			return applyOrange(doc);
 		}else {
@@ -126,6 +135,37 @@ public class ColorationPuces extends Action {
 			}
 		}
 		return null;
+	}
+	
+	private String getCouleurTexte(Document doc) throws NoCSSDefine{
+		Elements c = doc.select("link[rel=StyleSheet]");
+		String css = c.first().attr("href");
+		if (css == null)
+			throw new NoCSSDefine("Aucune feuille de style définie pour \""+doc.title()+"\"");
+		for (File file : cssFiles) {
+			if (file.getName().equals(css))
+				css = file.getAbsolutePath();
+		}
+		
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(css)), "utf-8"));
+			String ligne = "";
+			while ((ligne = br.readLine()) != null) {
+				if (ligne.contains("p {")) {
+					while (!(ligne = br.readLine()).contains("}")) {
+						if (ligne.contains("color: ")){
+							br.close();
+							return ligne.substring(ligne.indexOf(":")+2, ligne.length()-1);
+						}
+					}
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		throw new NoCSSDefine("L'attribut de couleur n'a pas été trouvé ! <br/> Veuillez le définir dans la feuille CSS");
+		
 	}
 
 	public ArrayList<String> getSansPP() {

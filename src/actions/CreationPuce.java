@@ -26,6 +26,7 @@ public class CreationPuce extends Action {
 		puces.add("·");
 		puces.add("-");
 		puces.add("ð");
+		puces.add("o ");
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class CreationPuce extends Action {
 				while (element != null && (containsPuce(element.text())) ){
 					element.tagName("li");
 					String txt = element.text();
-					if (puce.equals("è"))
+					if (puce.equals("è") || puce.equals("o "))
 						txt = txt.replaceFirst(puce, "");
 					else
 						txt = txt.replace(puce, "");
@@ -93,9 +94,10 @@ public class CreationPuce extends Action {
 
 	private boolean containsPuce(String text){
 		for (String string : puces) {
-			if (text.contains(string) && !string.equals("-"))
+			if (text.contains(string) && !string.equals("-") && !string.equals("o"))
 				return true;
-			else if (text.startsWith("-") || text.startsWith("&nbsp;-"))
+			else if (text.startsWith("-") || text.startsWith("&nbsp;-") ||
+					text.startsWith("o ") || text.startsWith("&nbsp;o "))
 				return true;
 		}
 		if (text.matches("^è[A-Z].*")){
