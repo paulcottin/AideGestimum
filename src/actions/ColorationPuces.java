@@ -24,29 +24,31 @@ import interfaces.Action;
 public class ColorationPuces extends Action {
 
 	ArrayList<String> sansPP;
-	NoPPDefine noPPDefine = new NoPPDefine();
+	NoPPDefine noPPDefine;
+	NoCSSDefine noCSSDefine;
 	boolean isOrange;
 	String couleurTexte;
-	
+
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
 		intitule = "Colorer les puces";
 		messageFin = "Coloration des puces finies";
-		sansPP = new ArrayList<String>();
-		
+		sansPP = new ArrayList<String>();	
+		noPPDefine = new NoPPDefine();
+		noCSSDefine = new NoCSSDefine();
 	}
-	
+
 	@Override
 	public void parametrer() throws ParametrageError {	
-		 String[] couleur = {"Orange", "Thématique"};
-		    String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[0]);
-		    if (nom != null) {
-		    	if (nom.equals("Orange")) 
-			    	isOrange = true;
-			    else
-			    	isOrange = false;				
-			}else
-				throw new ParametrageError("Il faut sélectionner une couleur !");
+		String[] couleur = {"Orange", "Thématique"};
+		String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[0]);
+		if (nom != null) {
+			if (nom.equals("Orange")) 
+				isOrange = true;
+			else
+				isOrange = false;				
+		}else
+			throw new ParametrageError("Il faut sélectionner une couleur !");
 	}
 
 	private Document applyThematique(Document doc) throws IOException, NullPointerException {
@@ -56,9 +58,9 @@ public class ColorationPuces extends Action {
 		} catch (NullPointerException e) {
 			noPPDefine.add(doc.title());
 		}
-		
+
 		Elements puces = doc.select("li");
-		
+
 		for (Element element : puces) {
 			for (Attribute a : element.attributes()) {
 				element.removeAttr(a.getKey());
@@ -68,10 +70,10 @@ public class ColorationPuces extends Action {
 				element.html("<p style=\"color: "+couleurTexte+";\">"+element.text()+"</p>");
 			}
 		}
-		
+
 		return doc;
 	}
-	
+
 	private Document applyOrange(Document doc) throws IOException, NullPointerException {
 		String couleur = "#ee6d0c";
 		Elements puces = doc.select("li");
@@ -84,23 +86,19 @@ public class ColorationPuces extends Action {
 				element.html("<p style=\"color: "+couleurTexte+";\">"+element.text()+"</p>");
 			}
 		}
-		
+
 		return doc;
 	}
 	@Override
 	protected Document applyStyle(Document doc) throws IOException, NullPointerException {
-		try {
-			couleurTexte = getCouleurTexte(doc);
-		} catch (NoCSSDefine e1) {
-			e1.printStackTrace();
-		}
+		couleurTexte = getCouleurTexte(doc);
 		if (isOrange) {
 			return applyOrange(doc);
 		}else {
 			return applyThematique(doc);
 		}
 	}
-	
+
 	private String getCouleur(Document doc) throws IOException, NullPointerException {
 		Elements pp = doc.select("meta[name=template]");
 		if (pp.size() > 0){
@@ -136,17 +134,18 @@ public class ColorationPuces extends Action {
 		}
 		return null;
 	}
-	
-	private String getCouleurTexte(Document doc) throws NoCSSDefine{
+
+	private String getCouleurTexte(Document doc) {
 		Elements c = doc.select("link[rel=StyleSheet]");
 		String css = c.first().attr("href");
 		if (css == null)
-			throw new NoCSSDefine("Aucune feuille de style définie pour \""+doc.title()+"\"");
+			noCSSDefine.add("Aucune feuille de style définie pour \""+doc.title()+"\"");
+
 		for (File file : cssFiles) {
 			if (file.getName().equals(css))
 				css = file.getAbsolutePath();
 		}
-		
+
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(css)), "utf-8"));
 			String ligne = "";
@@ -164,8 +163,8 @@ public class ColorationPuces extends Action {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		throw new NoCSSDefine("L'attribut de couleur n'a pas été trouvé ! <br/> Veuillez le définir dans la feuille CSS");
-		
+		noCSSDefine.add("L'attribut de couleur n'a pas été trouvé ! <br/> Veuillez le définir dans la feuille CSS (page \""+doc.title()+"\"");
+		return "black";
 	}
 
 	public ArrayList<String> getSansPP() {
@@ -182,5 +181,13 @@ public class ColorationPuces extends Action {
 
 	public void setNoPPDefine(NoPPDefine noPPDefine) {
 		this.noPPDefine = noPPDefine;
+	}
+
+	public NoCSSDefine getNoCSSDefine() {
+		return noCSSDefine;
+	}
+
+	public void setNoCSSDefine(NoCSSDefine noCSSDefine) {
+		this.noCSSDefine = noCSSDefine;
 	}
 }

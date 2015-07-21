@@ -104,6 +104,16 @@ public abstract class Action extends Observable implements LancerAction{
 				Principale.messageFin(msg);
 			}else
 				Principale.messageFin(messageFin);
+			list = ((ColorationPuces) this).getNoCSSDefine().getPages();
+			if (list.size() > 0) {
+				String msg = "Ces pages ont des problème avec leur CSS<br/>Traitement du texte des puces impossible !<br/><ul>";
+				for (String string : list) {
+					msg += "<li>"+string+"</li>";
+				}
+				msg += "</ul>";
+				Principale.messageFin(msg);
+			}else
+				Principale.messageFin(messageFin);
 		}
 		else if (this instanceof NoPP) {
 			ArrayList<String> list = ((NoPP) this).getException().getPages();
