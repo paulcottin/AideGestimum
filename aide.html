@@ -1,0 +1,33 @@
+<html>
+Le but de cette aide est de présenter rapidement les scripts qui ont été écrit pour faciliter l'incorporation des fiches thématiques dans la nouvelle aide ainsi que la mise à jour automatique de l'apparence de l'ancienne aide.
+
+<h1>Présentation et lancement de l'application</h1>
+<p>L'application créée propose différents scripts pour modifier les fichiers d'un projet RoboHelp.</p>
+<p>Pour lancer l'application il suffit de faire un double-clic sur le fichier .jar. 
+Une fenêtre s'ouvre, demandant de fermer RoboHelp avant toute utilisation. Ceci n'est pas obligatoire, il suffit d'avoir enregistré les différentes rubriques ouvertes de RoboHelp et l'application des scripts se fait sans problèmes.</p>
+<p>Il faut ensuite sélectionner le dossier de projet RoboHelp, s'affiche alors une fenêtre avec la liste de tous les scripts.<br/>Chaque script peut être appliqué à une sélection de fichiers htm ou à tous les fichiers htm du projet.</p>
+<h1>Les différents scripts</h1>
+<ul>
+	<li>Application d'un style à un mot</li>
+	<li>Choix d'une feuille de style : Applique une feuille CSS aux pages sélectionnées</li>
+	<li>Choix de la page principale : Applique une page principale (qui définie la structure d'une rubrique) aux pages sélectionnées</li>
+	<li>Colorer les puces : Permet : <ul>
+		<li>soit de donner une couleur Orange à toutes les puces et le texte de ces puces de la même couleur que le texte normal,</li>
+		<li> soit de donner la couleur du bandeau des pages principales de ces rubriques et au texte des puces la même couleur que le texte normal. </li>
+		</ul></li>
+	<li>Changer d'un style à l'autre : Lors de l'application d'une feuille de style à une page qui en possédait déjà une, il peut arriver que l'on veuille appliquer à tout les titre1 de l'ancienne feuille un style titre2 de la nouvelle feuille. <br/>
+	Pour cela, il faut sélectionner l'ancienne feuille et l'ancien style, puis la nouvelle feuille et le nouveau style.<br/>
+	Cette opération permet également de supprimer toutes les opérations de mise en page (gras, souligné, couleur, police, ...) définies en-dehors des styles, par dessus, à la main</li>
+	<li>Création de titre : Script non paramétrable qui à tous les texte qui possède une bordure basse, assigne le style titre1</li>
+	<li>Création de puces : Lors de l'import d'un document Word, différentes puces sont transformées en sympboles plus ou moins exotique sous RoboHelp. Ce script permet donc, à partir de ces symboles de recrééer les listes à puce existantes dans Word.</li>
+	<li>Donner un style aux liens : A tous les liens on applique le style choisi par l'utilisateur</li>
+	<li>Supprimer les titres : Dans l'ancienne aide, le titre de la rubrique était écrit en haut de chaque rubrique, avec le template aujourd'hui appliué, les titres sont déjà présents dans le bandeau. Aussi ce script permet de supprimer les anciens titres. <br/>
+	ATTENTION à ne pas le réutiliser, il pourrait supprimer des titres dans le document... </li>
+	<li>Supprimer les styles additionnels des titres : Pour les titres (titre1, 2, 3, ...) supprime tous les styles qui ne sont pas définis dans la feuille de style mais à la main, par-dessus</li>
+	<li>Nettoyage des pages principales : Il peut arriver que l'application de certain script ai provoqué des problèmes dans l'écriture dans le HTML du lien entre rubrique et page principale. Ce script permet donc de vérifier qu'il n'y a pas de lien vers "null" dans la définition des templates mais que les chemins sont bien valides.</li>
+	<li>Correction des titres : </li>
+	<li>Modification du Copyright : Permet d'écrire dans le code HTML le copyright que l'on souhaite dans la balise appropriée.</li>
+	<li>Rechercher les pages qui n'ont pas de page principale</li>
+	<li>Paramétrer un script : En cliquant sur le bouton "Paramétrer" vous pourrer pour une sélection (ou la totalité) de fichiers, appliquer à la chaine plusieurs des scripts définis ci-dessus.</li>
+</ul>
+</html>

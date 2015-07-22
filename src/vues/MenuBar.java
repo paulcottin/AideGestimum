@@ -7,6 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import controleurs.AfficheAide;
 import controleurs.ExporterCSV;
 import controleurs.ModifierNomFichiers;
 import controleurs.Quitter;
@@ -27,8 +28,8 @@ public class MenuBar extends JMenuBar implements Observer{
 	private static final long serialVersionUID = 1L;
 	private Principale p;
 
-	private JMenu fichier, actions;
-	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS;
+	private JMenu fichier, actions, aide;
+	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS, voirAide;
 	
 	public MenuBar(Principale p) {
 		super();
@@ -52,6 +53,10 @@ public class MenuBar extends JMenuBar implements Observer{
 		modifNomFichiers.setEnabled(false);
 		rechercheCSS = new JMenuItem("Recherche d'un CSS en fonction d'un nom de classe");
 		rechercheCSS.addActionListener(new controleurs.SearchCSS(p.getFiles()));
+		
+		aide = new JMenu("?");
+		voirAide = new JMenuItem("Aide");
+		voirAide.addActionListener(new AfficheAide());
 	}
 	
 	private void construct(){
@@ -62,8 +67,11 @@ public class MenuBar extends JMenuBar implements Observer{
 		actions.add(modifNomFichiers);
 		actions.add(rechercheCSS);
 		
+		aide.add(voirAide);
+		
 		this.add(fichier);
 		this.add(actions);
+		this.add(aide);
 	}
 
 	@Override
