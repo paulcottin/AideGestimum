@@ -26,7 +26,6 @@ public class CreationPuce extends Action {
 		puces.add("·");
 		puces.add("-");
 		puces.add("ð");
-		puces.add("o ");
 	}
 
 	@Override

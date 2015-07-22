@@ -171,12 +171,10 @@ public abstract class Action extends Observable implements LancerAction{
 
 	protected abstract Document applyStyle(Document doc) throws IOException;
 
-
 	@Override
 	public void lancerAction(ArrayList<File> files) {
 		htmlFiles.clear();
 	}
-
 
 	@Override
 	public abstract void parametrer() throws ParametrageError;
@@ -307,6 +305,25 @@ public abstract class Action extends Observable implements LancerAction{
 		return clean;
 	}
 
+	protected String getFullCSSPath(String path){
+		String name = null;
+		if (path.contains("/")) {
+			String[] tab = path.split("/");
+			name = tab[tab.length-1];
+		}
+		else if (path.contains("\\")){
+			String[] tab = path.split("\\\\");
+			name = tab[tab.length-1];
+		}
+		else
+			name = path;
+		for (File file: cssFiles) {
+			if (file.getName().equals(name))
+				return file.getAbsolutePath();
+		}
+		return null;
+	}
+	
 	private void initBaliseASauver(){
 		baliseASauver.add("img");
 		baliseASauver.add("a");
