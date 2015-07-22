@@ -1,0 +1,308 @@
+
+@font-face {
+	font-family: OpenSans;
+	src: url("Polices/OpenSans-Light.ttf") format(truetype);
+	src: url("Polices/opensans-light-webfont.eot?#iefix") format(embedded-opentype);
+};
+
+p {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 14pt;
+	color: #000000;
+}
+li {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+H1 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+	color: #f2771e;
+	font-size: 18pt;
+}
+H2 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 16pt;
+	color: black;
+	font-weight: bold;
+	font-variant: small-caps;
+	font-family: "Open Sans Light";
+}
+H4 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+H5 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+	color: #515b60;
+}
+H6 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+H6.Heading7 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+H6.Heading8 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+H6.Heading9 {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 2.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+P.Normal-Indent {
+	margin-left: 36.00pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.Tip-Note-Heading {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 6.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+P.Tip-Note-Text {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.Tip-Note-Text-Bulleted {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-indent: -9.35pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Topic-Text-Bulleted {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-indent: -9.35pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Topic-Text-Indent {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Topic-Text-Numbered {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-indent: -9.35pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Topic-Text-Onestep {
+	margin-left: 15.10pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-indent: -9.35pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Body-Text {
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.header {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.Block-Text {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.footnote-text {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.footer {
+	margin-left: 5.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: left;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.t1 {
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-align: justify;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: "Open Sans Light";
+}
+P.toc-3 {
+	margin-left: 41.75pt;
+	margin-right: 6.50pt;
+	margin-top: 4.00pt;
+	margin-bottom: 0.00pt;
+	text-indent: -18.00pt;
+	text-align: left;
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+}
+P.Retrait2 {
+	margin-left: 49.60pt;
+	margin-top: 0.00pt;
+	margin-bottom: 0.00pt;
+	text-align: justify;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+P.Retrait4 {
+	margin-left: 70.90pt;
+	margin-top: 0.00pt;
+	margin-bottom: 0.00pt;
+	text-align: justify;
+	font-size: 10pt;
+	font-family: "Open Sans Light";
+}
+BODY {
+	font-family: "Open Sans Light";
+	font-size: 10pt;
+	background-color: #ffffff;
+}
+.Liste_Orange {
+	color: #ff8400;
+	list-style: decimal;
+}
+p.Liste_Orange {
+	color: transparent;
+}
+span.Orange {
+	color: #ff8400;
+}
+span.Raison_Sociale {
+	font-weight: bold;
+	font-size: 11pt;
+	color: #ff8400;
+}
+span.expandtext {
+	font-family: "Open Sans Light";
+}
+span.Default {
+	font-family: "Open Sans Light";
+	font-size: 11pt;
+}
+p.Normal {
+}
+h3 {
+	font-weight: bold;
+	font-size: 13.5pt;
+	margin-top: 14pt;
+	margin-bottom: 14pt;
+	margin-left: 0pt;
+	margin-right: 0pt;
+	page-break-after: avoid;
+	color: #0000ff;
+}
+a.Lien {
+	display: inline;
+	color: #000080;
+}

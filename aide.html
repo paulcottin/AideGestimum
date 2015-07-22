@@ -1,5 +1,28 @@
 <html>
-Le but de cette aide est de présenter rapidement les scripts qui ont été écrit pour faciliter l'incorporation des fiches thématiques dans la nouvelle aide ainsi que la mise à jour automatique de l'apparence de l'ancienne aide.
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<div style="background-color: #ee6d0c; height: 53pt; font-family: OpenSans; 
+		 font-weight: bolder;">
+		<!-- <span style="float: left;"><img src="Images\G-2015-avec-contour-blanc.png" 
+										 alt="" style="border: none; position: absolute; 
+										 top: -7.5pt; border-width: 0x;" 
+										 width="90" height="90" border="0" /></span> --><span 
+		 style="float: center; text-align: center; font-size: 18pt; color: #ffffff; 
+		 margin-left: 50pt; margin-top: 20%; position: relative; left: 50pt; 
+		 top: 15pt; width: 30%; height: 100%; font-family: 'Open Sans Light', sans-serif; 
+		 font-weight: bold;">Assistant de migration d'aide</span> <span style="float: right; font-size: 23pt; 
+												 color: #ffffff; position: relative; 
+												 top: 0pt; width: 70%; 
+												 text-align: right; padding-right: 10pt; 
+												 vertical-align: center; 
+												 font-weight: lighter; 
+												 font-family: 'Open Sans Light', sans-serif;">Aide</span><span 
+		 style="float: right; font-size: 23pt; color: #ffffff; position: relative; 
+		 top: 0pt; width: 70%; text-align: right; padding-right: 10pt; 
+		 vertical-align: center; font-weight: lighter;"> </span>
+	</div>
+<p>Le but de cette aide est de présenter rapidement les scripts qui ont été écrit pour faciliter l'incorporation des fiches thématiques dans la nouvelle aide ainsi que la mise à jour automatique de l'apparence de l'ancienne aide.</p>
 
 <h1>Présentation et lancement de l'application</h1>
 <p>L'application créée propose différents scripts pour modifier les fichiers d'un projet RoboHelp.</p>
@@ -7,27 +30,40 @@ Le but de cette aide est de présenter rapidement les scripts qui ont été écr
 Une fenêtre s'ouvre, demandant de fermer RoboHelp avant toute utilisation. Ceci n'est pas obligatoire, il suffit d'avoir enregistré les différentes rubriques ouvertes de RoboHelp et l'application des scripts se fait sans problèmes.</p>
 <p>Il faut ensuite sélectionner le dossier de projet RoboHelp, s'affiche alors une fenêtre avec la liste de tous les scripts.<br/>Chaque script peut être appliqué à une sélection de fichiers htm ou à tous les fichiers htm du projet.</p>
 <h1>Les différents scripts</h1>
-<ul>
-	<li><h2>Application d'un style à un mot</p></li>
-	<li><h2>Choix d'une feuille de style </h2><p> Applique une feuille CSS aux pages sélectionnées</p></li>
-	<li><h2>Choix de la page principale </h2><p> Applique une page principale (qui définie la structure d'une rubrique) aux pages sélectionnées</p></li>
-	<li><h2>Colorer les puces </h2><p> Permet : <ul>
-		<li>soit de donner une couleur Orange à toutes les puces et le texte de ces puces de la même couleur que le texte normal,</li>
-		<li> soit de donner la couleur du bandeau des pages principales de ces rubriques et au texte des puces la même couleur que le texte normal. </li>
-		</ul></p></li>
-	<li><h2>Changer d'un style à l'autre </h2><p> Lors de l'application d'une feuille de style à une page qui en possédait déjà une, il peut arriver que l'on veuille appliquer à tout les titre1 de l'ancienne feuille un style titre2 de la nouvelle feuille. <br/>
+
+	<h2>- Application d'un style à un mot</p>
+	<h2>- Choix d'une feuille de style </h2><p style="color: black;"> Applique une feuille CSS aux pages sélectionnées</p>
+	<h2>- Choix de la page principale </h2><p style="color: black;"> Applique une page principale (qui définie la structure d'une rubrique) aux pages sélectionnées</p>
+	<h2>- Colorer les puces </h2><p style="color: black;"> Permet : <br/>
+		soit de donner une couleur Orange à toutes les puces et le texte de ces puces de la même couleur que le texte normal,<br/>
+		 soit de donner la couleur du bandeau des pages principales de ces rubriques et au texte des puces la même couleur que le texte normal. 
+		</p>
+	<h2>- Changer d'un style à l'autre </h2><p style="color: black;"> Lors de l'application d'une feuille de style à une page qui en possédait déjà une, il peut arriver que l'on veuille appliquer à tout les titre1 de l'ancienne feuille un style titre2 de la nouvelle feuille. <br/>
 	Pour cela, il faut sélectionner l'ancienne feuille et l'ancien style, puis la nouvelle feuille et le nouveau style.<br/>
-	Cette opération permet également de supprimer toutes les opérations de mise en page (gras, souligné, couleur, police, ...) définies en-dehors des styles, par dessus, à la main</p></li>
-	<li><h2>Création de titre </h2><p> Script non paramétrable qui à tous les texte qui possède une bordure basse, assigne le style titre1</p></li>
-	<li><h2>Création de puces </h2><p> Lors de l'import d'un document Word, différentes puces sont transformées en sympboles plus ou moins exotique sous RoboHelp. Ce script permet donc, à partir de ces symboles de recrééer les listes à puce existantes dans Word.</p></li>
-	<li><h2>Donner un style aux liens </h2><p> A tous les liens on applique le style choisi par l'utilisateur</p></li>
-	<li><h2>Supprimer les titres </h2><p> Dans l'ancienne aide, le titre de la rubrique était écrit en haut de chaque rubrique, avec le template aujourd'hui appliué, les titres sont déjà présents dans le bandeau. Aussi ce script permet de supprimer les anciens titres. <br/>
-	ATTENTION à ne pas le réutiliser, il pourrait supprimer des titres dans le document... </p></li>
-	<li><h2>Supprimer les styles additionnels des titres </h2><p> Pour les titres (titre1, 2, 3, ...) supprime tous les styles qui ne sont pas définis dans la feuille de style mais à la main, par-dessus</p></li>
-	<li><h2>Nettoyage des pages principales </h2><p> Il peut arriver que l'application de certain script ai provoqué des problèmes dans l'écriture dans le HTML du lien entre rubrique et page principale. Ce script permet donc de vérifier qu'il n'y a pas de lien vers "null" dans la définition des templates mais que les chemins sont bien valides.</p></li>
-	<li><h2>Correction des titres </h2><p> </p></li>
-	<li><h2>Modification du Copyright </h2><p> Permet d'écrire dans le code HTML le copyright que l'on souhaite dans la balise appropriée.</p></li>
-	<li><h2>Rechercher les pages qui n'ont pas de page principale</p></li>
-	<li><h2>Paramétrer un script </h2><p> En cliquant sur le bouton "Paramétrer" vous pourrer pour une sélection (ou la totalité) de fichiers, appliquer à la chaine plusieurs des scripts définis ci-dessus.</p></li>
-</ul>
+	Cette opération permet également de supprimer toutes les opérations de mise en page (gras, souligné, couleur, police, ...) définies en-dehors des styles, par dessus, à la main</p>
+	<h2>- Création de titre </h2><p style="color: black;"> Script non paramétrable qui à tous les texte qui possède une bordure basse, assigne le style titre1</p>
+	<h2>- Création de puces </h2><p style="color: black;"> Lors de l'import d'un document Word, différentes puces sont transformées en sympboles plus ou moins exotique sous RoboHelp. Ce script permet donc, à partir de ces symboles de recrééer les listes à puce existantes dans Word.</p>
+	<h2>- Donner un style aux liens </h2><p style="color: black;"> A tous les liens on applique le style choisi par l'utilisateur</p>
+	<h2>- Supprimer les titres </h2><p style="color: black;"> Dans l'ancienne aide, le titre de la rubrique était écrit en haut de chaque rubrique, avec le template aujourd'hui appliué, les titres sont déjà présents dans le bandeau. Aussi ce script permet de supprimer les anciens titres. <br/>
+	ATTENTION à ne pas le réutiliser, il pourrait supprimer des titres dans le document... </p>
+	<h2>- Supprimer les styles additionnels des titres </h2><p style="color: black;"> Pour les titres (titre1, 2, 3, ...) supprime tous les styles qui ne sont pas définis dans la feuille de style mais à la main, par-dessus</p>
+	<h2>- Nettoyage des pages principales </h2><p style="color: black;"> Il peut arriver que l'application de certain script ai provoqué des problèmes dans l'écriture dans le HTML du lien entre rubrique et page principale. Ce script permet donc de vérifier qu'il n'y a pas de lien vers "null" dans la définition des templates mais que les chemins sont bien valides.</p>
+	<h2>- Correction des titres </h2><p style="color: black;"> </p>
+	<h2>- Modification du Copyright </h2><p style="color: black;"> Permet d'écrire dans le code HTML le copyright que l'on souhaite dans la balise appropriée.</p>
+	<h2>- Rechercher les pages qui n'ont pas de page principale</p>
+	<h2>- Paramétrer un script </h2><p style="color: black;"> En cliquant sur le bouton "Paramétrer" vous pourrer pour une sélection (ou la totalité) de fichiers, appliquer à la chaine plusieurs des scripts définis ci-dessus.</p>
+
+<div style="background-color: #ee6d0c; height: 15pt; font-family: OpenSans; 
+		 color: #ffffff;">
+		&#160;&#160;&#160;&#160;&#160;©Jean-Laurent Brison, Paul Cottin <span style="float: right; 
+														 font-size: 12pt; 
+														 color: #ffffff; 
+														 position: relative; 
+														 top: 0pt; width: 70%; 
+														 text-align: right; 
+														 padding-right: 10pt; 
+														 vertical-align: center; 
+														 font-weight: lighter; 
+														 font-family: OpenSans;" </span>
+	</div>
 </html>
