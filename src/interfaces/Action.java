@@ -138,7 +138,8 @@ public abstract class Action extends Observable implements LancerAction{
 					msg += "<li>"+string+"</li>";
 				}
 				msg += "</ul>";
-				Principale.messageFin(msg);
+				((AssociationAuto) this).getFichierNontrouve().setMessage(msg);
+				((AssociationAuto) this).getFichierNontrouve().printMessage();
 			}else
 				Principale.messageFin(messageFin);
 		}
