@@ -3,6 +3,7 @@ package actions;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import exceptions.FichierNonTrouve;
 import exceptions.ParametrageError;
 import interfaces.Action;
 import main.Principale;
@@ -23,12 +25,14 @@ public class AssociationAuto extends Action {
 	File sourceFile;
 	ChoixPagePrincipale choixPP;
 	ArrayList<String> paths, PP;
+	FichierNonTrouve fichierNontrouve;
 
 	public AssociationAuto(ArrayList<File> files) {
 		super(files);
 		choixPP = new ChoixPagePrincipale(files);
 		this.PP = new ArrayList<String>();
 		this.paths = new ArrayList<String>();
+		this.fichierNontrouve = new FichierNonTrouve();
 		messageFin = "Application automatique effectuée avec succès";
 		intitule = "Association automatique";
 	}
@@ -119,9 +123,13 @@ public class AssociationAuto extends Action {
 				//on crée le doc de la pp
 				choixPP.setPagePath(PP.get(i));
 				//On fixe les fichiers sur lesquels on applique le traitement
-				Document d = Jsoup.parse(new File(paths.get(i)), "utf-8");
-				//On applique
-				choixPP.applyStyle(d);
+				try {
+					Document d = Jsoup.parse(new File(paths.get(i)), "utf-8");
+					//On applique
+					choixPP.applyStyle(d);
+				} catch (FileNotFoundException e) {
+					fichierNontrouve.add(paths.get(i));
+				}
 			}
 		}
 		return doc;
@@ -208,5 +216,13 @@ public class AssociationAuto extends Action {
 		} catch (FileSystemException fse){
 			throw fse;
 		}
+	}
+
+	public FichierNonTrouve getFichierNontrouve() {
+		return fichierNontrouve;
+	}
+
+	public void setFichierNontrouve(FichierNonTrouve fichierNontrouve) {
+		this.fichierNontrouve = fichierNontrouve;
 	}
 }

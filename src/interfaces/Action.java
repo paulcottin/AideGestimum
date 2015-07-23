@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import actions.AssociationAuto;
 import actions.ColorationPuces;
 import actions.NoPP;
 import exceptions.ParametrageError;
@@ -57,6 +58,7 @@ public abstract class Action extends Observable implements LancerAction{
 		} catch (ParametrageError e) {
 			e.printMessage();
 		}
+		supprFichiersTemp();
 		running = false;
 		update();
 	}
@@ -127,13 +129,34 @@ public abstract class Action extends Observable implements LancerAction{
 				Principale.messageFin(msg);
 			}else
 				Principale.messageFin(messageFin);
-		}else
+		}
+		else if (this instanceof AssociationAuto) {
+			ArrayList<String> list = ((AssociationAuto) this).getFichierNontrouve().getPages();
+			if (list.size() > 0) {
+				String msg = "Ces fichiers n'ont pas été trouvé !<br/><ul>";
+				for (String string : list) {
+					msg += "<li>"+string+"</li>";
+				}
+				msg += "</ul>";
+				Principale.messageFin(msg);
+			}else
+				Principale.messageFin(messageFin);
+		}
+		else
 			Principale.messageFin(messageFin);
+	}
+
+	private void supprFichiersTemp(){
+		String dir = System.getProperty("user.dir");
+		File[] files = (new File(dir)).listFiles();
+		for (File file : files)
+			if (file.getName().endsWith(".jlb"))
+				file.delete();
 	}
 
 	private void applyStyleHelper(File file) throws IOException{
 		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-		File tmp = new File(generateString(5, chars));
+		File tmp = new File(generateString(5, chars)+".jlb");
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8"));
 		String ligne = "", txt = "";
@@ -217,7 +240,7 @@ public abstract class Action extends Observable implements LancerAction{
 
 		if (style == null)
 			throw new ParametrageError("Il faut sélectionner une classe CSS ! ");
-		
+
 		style = getCSSBalise(style);
 		return style;
 	}
@@ -284,10 +307,10 @@ public abstract class Action extends Observable implements LancerAction{
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				pp, pp[0]);
-		
+
 		if (page == null)
 			throw new ParametrageError("Il faut sélectionner une page principale !");
-		
+
 		ArrayList<String> tmp = new ArrayList<String>();
 		for (File file: ppFiles) {
 			tmp.add(file.getName());
@@ -324,7 +347,7 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 		return null;
 	}
-	
+
 	private void initBaliseASauver(){
 		baliseASauver.add("img");
 		baliseASauver.add("a");
