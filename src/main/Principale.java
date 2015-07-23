@@ -27,6 +27,7 @@ import actions.NettoyageTitre;
 import actions.NoPP;
 import actions.Style;
 import actions.SupprStyleTitre;
+import actions.SuppressionEspace;
 import actions.SupprimerTitre;
 import actions.Titre;
 import exceptions.NoRoboHelpProject;
@@ -80,6 +81,7 @@ public class Principale extends Observable {
 		scripts.add(new NettoyageTitre(files));
 		scripts.add(new Copyright(files));
 		scripts.add(new NoPP(files));
+		scripts.add(new SuppressionEspace(files));
 	}
 
 	private String getTopicsPath(){

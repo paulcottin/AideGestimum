@@ -124,7 +124,7 @@ public class ChangerStyle extends Action {
 	 * @return vrai si le style est une balise, faux si c'est une classe CSS définie par l'utilisateur
 	 */
 	private boolean isBalise(String style){
-		if (style.equals("p"))
+		if (style.equals("p") || style.matches("(h|H)[0-9]"))
 			return true;
 		else return false;
 	}

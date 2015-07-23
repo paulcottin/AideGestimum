@@ -77,6 +77,17 @@ public class CreationPuce extends Action {
 			html += string + "\n";
 		}
 		doc = Jsoup.parse(html);
+		doc = nettoiePuces(doc);
+		return doc;
+	}
+	
+	private Document nettoiePuces(Document doc) {
+		Elements lis = doc.select("li");
+		for (Element element : lis)
+			if (element.children().size() > 0)
+				if (element.child(0).tagName().equals("p"))
+					if (element.child(0).text().equals(""))
+						element.remove();
 		return doc;
 	}
 
