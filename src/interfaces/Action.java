@@ -88,6 +88,7 @@ public abstract class Action extends Observable implements LancerAction{
 					applyStyleHelper(file);
 				} catch (NullPointerException e) {
 					System.out.println("erreur : "+file.getAbsolutePath());
+					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

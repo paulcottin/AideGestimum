@@ -22,14 +22,13 @@ public class AssociationAuto extends Action {
 
 	File sourceFile;
 	ChoixPagePrincipale choixPP;
-	ArrayList<String> paths, PP, ppPath;
+	ArrayList<String> paths, PP;
 
 	public AssociationAuto(ArrayList<File> files) {
 		super(files);
 		choixPP = new ChoixPagePrincipale(files);
 		this.PP = new ArrayList<String>();
 		this.paths = new ArrayList<String>();
-		this.ppPath = new ArrayList<String>();
 		messageFin = "Application automatique effectuée avec succès";
 		intitule = "Association automatique";
 	}
@@ -125,7 +124,7 @@ public class AssociationAuto extends Action {
 				choixPP.applyStyle(d);
 			}
 		}
-		return null;
+		return doc;
 	}
 
 	private void updatePath(String pageP, String name){
