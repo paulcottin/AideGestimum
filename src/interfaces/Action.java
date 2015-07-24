@@ -32,6 +32,17 @@ public abstract class Action extends Observable implements LancerAction{
 	protected String intitule;
 	private ArrayList<String> baliseASauver;
 
+	/**
+	 * Contructeur de la classe.
+	 * Trois listes de fichiers sont instanciées et remplies en fonction de l'extension des fichiers du projet.
+	 * Le boolean running est initialisé à false, il sert à savoir lorsqu'un script est en train d'être exécuté
+	 * la liste de String "balise à sauver" est une contenant des balises de mises en forme particulière comme 
+	 * ul, li, img, h1-5, tr, td ... 
+	 * Cette liste permettra ensuite de savoir si on doit supprimer toutes les balises de mise en page 
+	 * (comme <span> par exemple) dans une balise <p>, pour appliquer le style définit dans le CSS ou 
+	 * si il ne faut pas supprimer l'intérieur de cette balise p de peur de perdre de l'information. 
+	 * @param files
+	 */
 	public Action(ArrayList<File> files) {
 		htmlFiles = new ArrayList<File>();
 		cssFiles = new ArrayList<File>();
@@ -51,6 +62,12 @@ public abstract class Action extends Observable implements LancerAction{
 	}
 
 
+	/**
+	 * C'est la méthode la première appelée.
+	 * Elle gère les erreurs de paramétrages et l'affichage de la barre 
+	 * de progression (avec le boolean running)
+	 * Elle supprime également les fichiers temporaires à la fin de l'exécution.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -64,6 +81,10 @@ public abstract class Action extends Observable implements LancerAction{
 	}
 
 
+	/**
+	 * Cette méthode permet de récupérer les fichiers sélectionnés dans la fenêtre de sélection, afin 
+	 * d'appliquer le traitement sur eux seuls.
+	 */
 	@Override
 	public void fichiersSelectionnes(ArrayList<File> files) {
 		lancerAction(files);
@@ -78,6 +99,12 @@ public abstract class Action extends Observable implements LancerAction{
 	}
 
 
+	/**
+	 * Lance le script sur tous les fichiers sélectionnés.
+	 * Pour chaque fichier on applique le script.
+	 * A la fin on gère l'affichage de certaines exceptions comme celles qui recensent les pages sans 
+	 * feuilles de style ou sans pages principales.
+	 */
 	@Override
 	public void lancerActionAll() throws ParametrageError{
 		parametrer();
@@ -147,6 +174,9 @@ public abstract class Action extends Observable implements LancerAction{
 			Principale.messageFin(messageFin);
 	}
 
+	/**
+	 * Supprime les fichiers temporaires (extension .jlb)
+	 */
 	private void supprFichiersTemp(){
 		String dir = System.getProperty("user.dir");
 		File[] files = (new File(dir)).listFiles();
@@ -155,6 +185,15 @@ public abstract class Action extends Observable implements LancerAction{
 				file.delete();
 	}
 
+	/**
+	 * Méthode qui applique le script sur une page.
+	 * Cette méthode lit le fichier, le parse avec l'aide de la bivliothèque JSoup puis passe
+	 * le document ainsi formé à la fonction applyStyle(Document doc) qui va lui appliquer le script proprement dit.
+	 * Après que le script soit appliqué, cette méthode écrit le résultat dans un fichier temporaire et
+	 * remplace le fichier de base par le fichier temporaire.
+	 * @param file : le fichier qui va être traité
+	 * @throws IOException
+	 */
 	private void applyStyleHelper(File file) throws IOException{
 		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		File tmp = new File(generateString(5, chars)+".jlb");
@@ -170,6 +209,8 @@ public abstract class Action extends Observable implements LancerAction{
 		doc = applyStyle(doc);
 		String html = doc.html();
 
+		//Décommente les balises RoboHelp, commentée automatiquement par
+		//la libraire JSoup.
 		html = html.replace("<!--?", "<?");
 		html = html.replace("?-->", "?>");
 
@@ -185,6 +226,12 @@ public abstract class Action extends Observable implements LancerAction{
 		}
 	}
 
+	/**
+	 * Génère une chaîne de caractère pour le nom d'un fichier temporaire.
+	 * @param length : longueur de la chaine
+	 * @param chars : Chaîne de caractère servant de base à la génération.
+	 * @return
+	 */
 	private String generateString(int length, String chars) {
 		StringBuilder  pass = new StringBuilder (chars.length());
 		for (int x = 0; x < length; x++) {
@@ -194,16 +241,37 @@ public abstract class Action extends Observable implements LancerAction{
 		return pass.toString();
 	}
 
+	/**
+	 * Méthode implémenté par chaque classe du package actions (chaque script) qui fait le travail
+	 * particulier.
+	 * @param doc le document d'origine (format JSoup)
+	 * @return doc : le même document modifié par le script
+	 * @throws IOException
+	 */
 	protected abstract Document applyStyle(Document doc) throws IOException;
 
+	/**
+	 * Méthode inutilisée mais indispensable.
+	 */
 	@Override
 	public void lancerAction(ArrayList<File> files) {
 		htmlFiles.clear();
 	}
 
+	/**
+	 * Méthode immplémentée par chaque script dans laquelle on demande (si besoin) des informations
+	 * à l'utilisateur afin de paramétrer le script.
+	 */
 	@Override
 	public abstract void parametrer() throws ParametrageError;
 
+	/**
+	 * Affiche une boîte de dialogue pour récupérer un fichier CSS parmi tous ceux du projet
+	 * @param titre : tire de la boîte de dialogue.
+	 * @param message : Message de la boîte de dialogue
+	 * @return file : Fichier correspondant au fichier sélectionné par l'utilisateur.
+	 * @throws ParametrageError : Si l'utilisateur annule ou ferme la boîte de dialogue.
+	 */
 	protected File cssFile(String titre, String message) throws ParametrageError{
 		String cssFilePath = null;
 		String[] cssFiles = new String[this.cssFiles.size()];
@@ -230,6 +298,14 @@ public abstract class Action extends Observable implements LancerAction{
 		return new File(cssFilePath);
 	}
 
+	/**
+	 * Affiche une boîte de dialogue pour la sélection d'une classe CSS dans un fichier CSS
+	 * @param file : Fichier dans lequel chercher
+	 * @param titre : Titre de la boîte de dialogue
+	 * @param message : Message de la boîte de dialogue
+	 * @return classe sélectionnée par l'utilisateur
+	 * @throws ParametrageError : Si l'utilisateur annule ou ferme la boîte de dialogue.
+	 */
 	protected String cssClass(File file, String titre, String message) throws ParametrageError{
 		String[] styles = afficheCSSClasses(getCssClass(file));
 		String style =	(String) JOptionPane.showInputDialog(null, 
@@ -246,6 +322,11 @@ public abstract class Action extends Observable implements LancerAction{
 		return style;
 	}
 
+	/**
+	 * 
+	 * @param fichier CSS
+	 * @return toutes les classes CSS présentes dans ce fichier
+	 */
 	protected ArrayList<String> getCssClass(File file) {
 		ArrayList<String> reponse = new ArrayList<String>();
 
@@ -283,6 +364,11 @@ public abstract class Action extends Observable implements LancerAction{
 			return classeAffichee;
 	}
 
+	/**
+	 * inverse de la méthode ci-dessus
+	 * @param classes
+	 * @return
+	 */
 	private String[] afficheCSSClasses(ArrayList<String> classes){
 		String[] styles = new String[classes.size()];
 		for (int i = 0; i < classes.size(); i++) {
@@ -296,6 +382,11 @@ public abstract class Action extends Observable implements LancerAction{
 		return styles;
 	}
 
+	/**
+	 * Affiche une boite de dialogue permettant de sélectionner une page principale parmi toutes celles du projet
+	 * @return : le chemin absolu de la page sélectionnée.
+	 * @throws ParametrageError : Si l'utilisateur annule ou ferme la boîte de dialogue.
+	 */
 	protected String getPPPath() throws ParametrageError{
 		String[] pp = new String[ppFiles.size()];
 		for (int i = 0; i < ppFiles.size(); i++) {
@@ -321,6 +412,12 @@ public abstract class Action extends Observable implements LancerAction{
 		return path;
 	}
 
+	/**
+	 * Vérifie si l'élément Jsoup passé en paramètre contient comme fils des balises à ne pas supprimée
+	 * (listées dans baliseASauvegardee).
+	 * @param element
+	 * @return true si les balises ne sont pas trouvées, false sinon
+	 */
 	protected boolean isCleannable(Element element){
 		boolean clean = true;
 		for (Element e : element.getAllElements()) {
@@ -330,6 +427,11 @@ public abstract class Action extends Observable implements LancerAction{
 		return clean;
 	}
 
+	/**
+	 * 
+	 * @param path d'un fichier CSS
+	 * @return le path absolu de ce fichier
+	 */
 	protected String getFullCSSPath(String path){
 		String name = null;
 		if (path.contains("/")) {
@@ -349,6 +451,9 @@ public abstract class Action extends Observable implements LancerAction{
 		return null;
 	}
 
+	/**
+	 * initialisation de la liste de balises à ne pas détruire.
+	 */
 	private void initBaliseASauver(){
 		baliseASauver.add("img");
 		baliseASauver.add("a");
@@ -383,6 +488,9 @@ public abstract class Action extends Observable implements LancerAction{
 		//Ne rien faire
 	}
 
+	/**
+	 * factorisation de code pour notifier les observer que le modèle à changé
+	 */
 	protected void update(){
 		setChanged();
 		notifyObservers();
