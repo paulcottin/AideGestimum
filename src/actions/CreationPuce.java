@@ -83,11 +83,17 @@ public class CreationPuce extends Action {
 	
 	private Document nettoiePuces(Document doc) {
 		Elements lis = doc.select("li");
-		for (Element element : lis)
-			if (element.children().size() > 0)
+		for (Element element : lis) {
+			if (element.children().size() > 0) {
 				if (element.child(0).tagName().equals("p"))
 					if (element.child(0).text().equals(""))
 						element.remove();
+			}
+			else if (element.text().equals("")) {
+				element.remove();
+			}
+		}
+					
 		return doc;
 	}
 
