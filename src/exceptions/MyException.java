@@ -41,14 +41,17 @@ public abstract class MyException extends Throwable {
 	private void writeLog(){
 		BufferedWriter bw;
 		BufferedReader br;
+		String fichier = "";
 		try {
-			br = new BufferedReader(new FileReader(log));
-			String ligne = "", fichier = "";
-			
-			while ((ligne = br.readLine()) != null)
-				fichier += ligne;
-			
-			br.close();
+			try {
+				br = new BufferedReader(new FileReader(log));
+				String ligne = "";
+				
+				while ((ligne = br.readLine()) != null)
+					fichier += ligne;
+				
+				br.close();
+			} catch (IOException e) {}
 			
 			bw = new BufferedWriter(new FileWriter(log));
 			bw.write(fichier);
@@ -58,6 +61,14 @@ public abstract class MyException extends Throwable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 }
