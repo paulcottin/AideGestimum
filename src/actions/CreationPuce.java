@@ -17,15 +17,17 @@ public class CreationPuce extends Action {
 
 	public CreationPuce(ArrayList<File> files) {
 		super(files);
-		intitule = "Création de puces";
-		messageFin = "Création des puces terminée";
+		intitule = "CrÃ©ation de puces";
+		messageFin = "CrÃ©ation des puces terminÃ©e";
 		puces = new ArrayList<String>();
-		puces.add("§");
-		puces.add("Ø");
-		puces.add("•");
-		puces.add("·");
+		puces.add("Â§");
+		puces.add("Ã˜");
+		puces.add("â€¢");
+		puces.add("Â·");
 		puces.add("-");
-		puces.add("ð");
+		puces.add("Ã°");
+		puces.add("â–¼");
+		puces.add("Ã¾");
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class CreationPuce extends Action {
 				while (element != null && (containsPuce(element.text())) ){
 					element.tagName("li");
 					String txt = element.text();
-					if (puce.equals("è") || puce.equals("o "))
+					if (puce.equals("Ã¨") || puce.equals("o "))
 						txt = txt.replaceFirst(puce, "");
 					else
 						txt = txt.replace(puce, "");
@@ -103,8 +105,8 @@ public class CreationPuce extends Action {
 			if (text.contains(string))
 				index = text.indexOf(string);
 		}
-		if (text.matches("^è[A-Z].*"))
-			index = text.indexOf("è");
+		if (text.matches("^Ã¨[A-Z].*"))
+			index = text.indexOf("Ã¨");
 		else if (text.startsWith("o "))
 			index = text.indexOf("o");
 		return text.substring(index, index+1);
@@ -118,7 +120,7 @@ public class CreationPuce extends Action {
 					text.startsWith("o ") || text.startsWith("&nbsp;o "))
 				return true;
 		}
-		if (text.matches("^è[A-Z].*")){
+		if (text.matches("^Ã¨[A-Z].*")){
 			return true;
 		}
 		return false;
