@@ -1,13 +1,10 @@
 package actions;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -18,7 +15,6 @@ import org.jsoup.nodes.Document;
 import exceptions.FichierNonTrouve;
 import exceptions.ParametrageError;
 import interfaces.Action;
-import main.Principale;
 
 public class AssociationAuto extends Action {
 
@@ -41,11 +37,6 @@ public class AssociationAuto extends Action {
 	public void parametrer() throws ParametrageError{
 		try {
 			getSourceFile();
-			try {
-				checkEncodage();
-			} catch (FileSystemException e) {
-				e.printStackTrace();
-			}
 			getPathAndPP();
 			displayPP();
 		} catch (ParametrageError e) {
@@ -80,7 +71,7 @@ public class AssociationAuto extends Action {
 		}
 	}
 
-	private boolean displayPP(){
+	private boolean displayPP() throws ParametrageError{
 		ArrayList<String> tmp = new ArrayList<String>();
 		//On récupère toutes les pages principales du fichier source
 		for (String string : PP) {
@@ -106,12 +97,13 @@ public class AssociationAuto extends Action {
 						null,
 						tab, tab[0]);
 
+				if (name == null)
+					throw new ParametrageError("Il faut faire la correspondance avec TOUTES les pages !");
 				updatePath(tmp.get(i), name);
 			}
 			return true;
 		}else {
-			Principale.messageFin("Il faut d'abord définir une page principale !");
-			return false;
+			throw new ParametrageError("Il faut d'abord définir au moins une page principale !");
 		}
 
 	}
@@ -153,70 +145,74 @@ public class AssociationAuto extends Action {
 		return null;
 	}
 
-	private void checkEncodage() throws FileSystemException {
-		BufferedReader br = null;
-		File tmp = new File("tmp.csv");
-		BufferedWriter bw = null;
-		try {
-			br = new BufferedReader(new FileReader(sourceFile));
-			bw = new BufferedWriter(new FileWriter(tmp));
-
-			String ligne = "";
-
-			while ((ligne = br.readLine()) != null){
-				if (ligne.contains("?") || ligne.contains("‚") || ligne.contains("…") || 
-						ligne.contains("‡") || ligne.contains("ˆ") || ligne.contains("‰") || ligne.contains("Š")  || ligne.contains("—")
-						|| ligne.contains("“")  || ligne.contains("–")  || ligne.contains("Œ")  || ligne.contains("‹")) {
-					String l = ligne;
-					if (ligne.contains("?"))
-						l = l.replaceAll("\\?", "’");
-					if (ligne.contains("‚"))
-						l = l.replaceAll("‚", "é");
-					if (ligne.contains("…"))
-						l = l.replaceAll("…", "à");
-					if (l.contains("‡"))
-						l = l.replaceAll("‡", "ç");
-					if (l.contains("ˆ"))
-						l = l.replaceAll("ˆ", "ê");
-					if (l.contains("‰"))
-						l = l.replaceAll("‰", "ë");
-					if (l.contains("Š"))
-						l = l.replaceAll("Š", "è");
-					if (l.contains("—"))
-						l = l.replaceAll("—", "ù");
-					if (l.contains("“"))
-						l = l.replaceAll("“", "ô");
-					if (l.contains("–"))
-						l = l.replaceAll("–", "û");
-					if (l.contains("Œ"))
-						l = l.replaceAll("Œ", "î");
-					if (l.contains("‹"))
-						l = l.replaceAll("‹", "ï");
-					if (l.contains("ƒ"))
-						l = l.replaceAll("ƒ", "â");
-					bw.write(l+"\r\n");
-				}
-				else
-					bw.write(ligne+"\r\n");
-			}
-			bw.close();
-			br.close();
-		} catch (IOException e) {
-			try {
-				bw.close();
-				br.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-
-		}
-		try {
-			Principale.fileMove(tmp, sourceFile);
-		} catch (FileSystemException fse){
-			throw fse;
-		}
-	}
+	/**
+	 * Plus besoin depuis qu'on sait lire avec un encodage précis un fichier
+	 * @return
+	 */
+//	private void checkEncodage() throws FileSystemException {
+//		BufferedReader br = null;
+//		File tmp = new File("tmp.csv");
+//		BufferedWriter bw = null;
+//		try {
+//			br = new BufferedReader(new FileReader(sourceFile));
+//			bw = new BufferedWriter(new FileWriter(tmp));
+//
+//			String ligne = "";
+//
+//			while ((ligne = br.readLine()) != null){
+//				if (ligne.contains("?") || ligne.contains("‚") || ligne.contains("…") || 
+//						ligne.contains("‡") || ligne.contains("ˆ") || ligne.contains("‰") || ligne.contains("Š")  || ligne.contains("—")
+//						|| ligne.contains("“")  || ligne.contains("–")  || ligne.contains("Œ")  || ligne.contains("‹")) {
+//					String l = ligne;
+//					if (ligne.contains("?"))
+//						l = l.replaceAll("\\?", "’");
+//					if (ligne.contains("‚"))
+//						l = l.replaceAll("‚", "é");
+//					if (ligne.contains("…"))
+//						l = l.replaceAll("…", "à");
+//					if (l.contains("‡"))
+//						l = l.replaceAll("‡", "ç");
+//					if (l.contains("ˆ"))
+//						l = l.replaceAll("ˆ", "ê");
+//					if (l.contains("‰"))
+//						l = l.replaceAll("‰", "ë");
+//					if (l.contains("Š"))
+//						l = l.replaceAll("Š", "è");
+//					if (l.contains("—"))
+//						l = l.replaceAll("—", "ù");
+//					if (l.contains("“"))
+//						l = l.replaceAll("“", "ô");
+//					if (l.contains("–"))
+//						l = l.replaceAll("–", "û");
+//					if (l.contains("Œ"))
+//						l = l.replaceAll("Œ", "î");
+//					if (l.contains("‹"))
+//						l = l.replaceAll("‹", "ï");
+//					if (l.contains("ƒ"))
+//						l = l.replaceAll("ƒ", "â");
+//					bw.write(l+"\r\n");
+//				}
+//				else
+//					bw.write(ligne+"\r\n");
+//			}
+//			bw.close();
+//			br.close();
+//		} catch (IOException e) {
+//			try {
+//				bw.close();
+//				br.close();
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//			}
+//			e.printStackTrace();
+//
+//		}
+//		try {
+//			Principale.fileMove(tmp, sourceFile);
+//		} catch (FileSystemException fse){
+//			throw fse;
+//		}
+//	}
 
 	public FichierNonTrouve getFichierNontrouve() {
 		return fichierNontrouve;

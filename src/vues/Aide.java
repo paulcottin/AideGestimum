@@ -33,7 +33,6 @@ public class Aide extends JFrame {
 		} catch (IOException e) {
 			throw new AideException("Erreur lors de la lecture du fichier aide.html");
 		}
-		System.out.println(aideHTML);
 		pane = new JEditorPane();
 		kit = new HTMLEditorKit();
 		initAide();
@@ -56,23 +55,25 @@ public class Aide extends JFrame {
 	
 	private void initCSS(){
 		StyleSheet styleSheet = kit.getStyleSheet();
-		styleSheet.addRule("p { margin-left: 5.75pt; }");
-		styleSheet.addRule("p { margin-right: 6.50pt; }");
-		styleSheet.addRule("p {margin-top: 4.00pt; }");
-		styleSheet.addRule("p { margin-bottom: 0.00pt; }");
-		styleSheet.addRule("p {text-align: left; }");
-		styleSheet.addRule("p {font-family: \"Open Sans Light\"; }");
-		styleSheet.addRule("p { font-size: 13pt; }");
-		styleSheet.addRule("p { color: #000000; }");
-		styleSheet.addRule("H1 { margin-left: 5.75pt;}");
-		styleSheet.addRule("H1 { margin-right: 6.50pt;}");
-		styleSheet.addRule("H1 { margin-top: 6.00pt;}");
-		styleSheet.addRule("H1 { margin-bottom: 2.00pt;}");
-		styleSheet.addRule("H1 { text-align: left;}");
-		styleSheet.addRule("H1 { font-weight: bold;}");
-		styleSheet.addRule("H1 { font-family: \"Open Sans Light\"; }");
-		styleSheet.addRule("H1 { color: #f2771e;}");
-		styleSheet.addRule("H1 { font-size: 18pt;}");
+		styleSheet.addRule("p { margin-left: 5.75pt;"
+				+ "margin-right: 6.50pt;"
+				+ "margin-top: 4.00pt;"
+				+ "margin-bottom: 0.00pt;"
+				+ "text-align: left;"
+				+ "font-family: \"Open Sans Light\";"
+				+ "font-size: 13pt;"
+				+ "color: #000000;"
+				+ "}");
+		styleSheet.addRule("H1 { margin-left: 5.75pt;"
+				+ "margin-right: 6.50pt;"
+				+ "margin-top: 6.00pt;"
+				+ "margin-bottom: 2.00pt;"
+				+ "text-align: left;"
+				+ "font-weight: bold;"
+				+ "font-family: \"Open Sans Light\";"
+				+ "color: #f2771e;"
+				+ "font-size: 18pt;"
+				+ "}");
 		styleSheet.addRule("H2 {margin-left: 5.75pt; margin-left: 5.75pt; "
 				+ "margin-right: 6.50pt;"
 				+ "margin-top: 6.00pt;"
@@ -82,7 +83,8 @@ public class Aide extends JFrame {
 				+ "color: black;"
 				+ "font-weight: bold;"
 				+ "font-variant: small-caps;"
-				+ "font-family: \"Open Sans Light\";}");
+				+ "font-family: \"Open Sans Light\";"
+				+ "}");
 		kit.setStyleSheet(styleSheet);
 	}
 	
