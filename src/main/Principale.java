@@ -41,8 +41,8 @@ public class Principale extends Observable {
 	private Script script;
 	private ArrayList<Action> scripts;
 
-	File topics;
-	ArrayList<File> files;
+	public File topics;
+	public ArrayList<File> files;
 
 
 	public Principale() throws NoRoboHelpProject{
