@@ -138,11 +138,9 @@ public class ColorationPuces extends Action {
 	private String getCouleurTexte(Document doc) {
 		Elements c = doc.select("link[rel=StyleSheet]");
 		String css = c.first().attr("href");
-		System.out.println(css);
 		if (css == null)
 			noCSSDefine.add("Aucune feuille de style définie pour \""+doc.title()+"\"");
 		css = getFullCSSPath(css);
-		System.out.println(css);
 		for (File file : cssFiles) {
 			if (file.getName().equals(css))
 				css = file.getAbsolutePath();

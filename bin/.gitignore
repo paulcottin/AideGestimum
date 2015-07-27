@@ -1,4 +1,6 @@
 /actions/
 /exceptions/
-/interfaces/
 /main/
+/controleurs/
+/interfaces/
+/vues/

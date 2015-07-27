@@ -95,27 +95,7 @@ public class ChangerStyle extends Action {
 	 */
 	private void correspondaceStyles() throws ParametrageError{
 		oldStyle = cssClass(cssFile("Paramétrage", "Feuille de style de départ"), "Paramétrage", "Classe de départ");
-		
 		newStyle = cssClass(cssFile("Paramétrage", "Feuille de style d'arrivée"), "Paramétrage", "Classe d'arrivée");
-		
-	}
-	
-	/**
-	 * Affiche de manière compréhensible pour l'utilisateur certaines classes CSS (p => Normal, H1 => Titre 1, ...)
-	 * @param classes
-	 * @return
-	 */
-	private String[] afficheCSSClasses(ArrayList<String> classes){
-		String[] styles = new String[classes.size()];
-		for (int i = 0; i < classes.size(); i++) {
-			if (classes.get(i).equals("p"))
-				styles[i] = "Normal";
-			else if (classes.get(i).matches("(H|h)[0-9]"))
-				styles[i] = "Titre "+classes.get(i).substring(1);
-			else
-				styles[i] = classes.get(i);
-		}
-		return styles;
 	}
 
 	/**

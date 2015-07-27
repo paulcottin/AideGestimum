@@ -32,7 +32,6 @@ public class NoPP extends Action {
 
 	@Override
 	public void parametrer() throws ParametrageError {
-		// TODO Auto-generated method stub
 		
 	}
 

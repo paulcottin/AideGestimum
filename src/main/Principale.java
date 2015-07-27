@@ -41,8 +41,8 @@ public class Principale extends Observable {
 	private Script script;
 	private ArrayList<Action> scripts;
 
-	File topics;
-	ArrayList<File> files;
+	public File topics;
+	public ArrayList<File> files;
 
 
 	public Principale() throws NoRoboHelpProject{
@@ -151,11 +151,7 @@ public class Principale extends Observable {
 	}
 
 	private File getCurrentDir(){
-		String tmp = Principale.class.getResource("Principale.class").toString();
-
-		tmp = tmp.substring("file:/".length()+4, (tmp.length()-"/bin/main/Principale.class".length()));
-		String[] tab = tmp.split("/");
-		tmp = tmp.substring(0, tmp.length()-tab[tab.length-1].length());
+		String tmp = System.getProperty("user.dir");
 		return new File(tmp);
 	}
 

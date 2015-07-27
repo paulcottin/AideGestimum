@@ -10,5 +10,6 @@ public class NoRoboHelpProject extends MyException {
 	public NoRoboHelpProject(String message) {
 		super(message);
 		displayMessage();
+		System.exit(0);
 	}
 }
