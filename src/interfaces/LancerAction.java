@@ -10,4 +10,5 @@ public interface LancerAction extends Runnable, LongTask, NeedSelectionFichiers 
 	public void lancerActionAll() throws ParametrageError;
 	public void lancerAction(ArrayList<File> files);
 	public void parametrer() throws ParametrageError;
+	public void reloadFiles(ArrayList<File> files);
 }

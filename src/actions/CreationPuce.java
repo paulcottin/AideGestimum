@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -91,6 +92,13 @@ public class CreationPuce extends Action {
 			}
 			else if (element.text().equals("")) {
 				element.remove();
+			}
+		}
+		
+		Elements uls = doc.select("ul");
+		for (Element element : uls) {
+			for (Attribute a: element.attributes()) {
+				element.removeAttr(a.getKey());
 			}
 		}
 					

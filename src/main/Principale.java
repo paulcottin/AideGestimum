@@ -52,7 +52,7 @@ public class Principale extends Observable {
 //		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
 //		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
 
-		listerRepertoire(topics);
+		files = listerRepertoire(topics);
 		
 		if (!isRobotHelpProject())
 			throw new NoRoboHelpProject("Ce dossier ne contient pas de projet RoboHelp");
@@ -99,7 +99,8 @@ public class Principale extends Observable {
 			return null;
 	}
 
-	private void listerRepertoire(File topics){ 
+	public ArrayList<File> listerRepertoire(File topics){ 
+		ArrayList<File> files = new ArrayList<File>();
 		File[] listefichiers; 
 
 		listefichiers=topics.listFiles();
@@ -109,10 +110,11 @@ public class Principale extends Observable {
 				FILE_BASE = listefichiers[i];
 
 			if (listefichiers[i].isDirectory() && !listefichiers[i].getAbsolutePath().contains("!"))
-				listerRepertoire(listefichiers[i]);
+				files.addAll(listerRepertoire(listefichiers[i]));
 			else if (!listefichiers[i].isDirectory())
 				files.add(listefichiers[i]);
 		}
+		return files;
 	}
 	
 	private boolean isRobotHelpProject(){
@@ -218,5 +220,13 @@ public class Principale extends Observable {
 
 	public void setScripts(ArrayList<Action> scripts) {
 		this.scripts = scripts;
+	}
+
+	public File getTopics() {
+		return topics;
+	}
+
+	public void setTopics(File topics) {
+		this.topics = topics;
 	}
 }

@@ -204,6 +204,10 @@ public abstract class Action extends Observable implements LancerAction{
 	@Override
 	public abstract void parametrer() throws ParametrageError;
 
+	public void reloadFiles(ArrayList<File> files){
+		
+	}
+	
 	protected File cssFile(String titre, String message) throws ParametrageError{
 		String cssFilePath = null;
 		String[] cssFiles = new String[this.cssFiles.size()];

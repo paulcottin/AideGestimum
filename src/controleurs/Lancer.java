@@ -35,6 +35,7 @@ public class Lancer implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (choix == ALL){
+			principale.setFiles(principale.listerRepertoire(principale.getTopics()));
 			th.start();
 			@SuppressWarnings("unused")
 			ProgressBar bar = new ProgressBar(p);
