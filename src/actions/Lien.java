@@ -36,6 +36,8 @@ public class Lien extends Action{
 			}
 			element.addClass(classe);
 			element.attr("href", href);
+			if (!isImageInLink(element))
+				element.text(element.text());
 		}
 		return doc;
 	}
@@ -46,4 +48,13 @@ public class Lien extends Action{
 		if (c != null)
 			classe = c;
 	}
+	
+	private boolean isImageInLink(Element element){
+		for (Element element2 : element.getAllElements()) {
+			if (element2.tagName().equals("img"))
+				return true;
+		}
+		return false;
+	}
 }
+

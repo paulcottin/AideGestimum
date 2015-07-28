@@ -18,8 +18,8 @@ public class CreationPuce extends Action {
 
 	public CreationPuce(ArrayList<File> files) {
 		super(files);
-		intitule = "CrÃ©ation de puces";
-		messageFin = "CrÃ©ation des puces terminÃ©e";
+		intitule = "Création de puces";
+		messageFin = "Création des puces terminée";
 		puces = new ArrayList<String>();
 		puces.add("Â§");
 		puces.add("Ã˜");

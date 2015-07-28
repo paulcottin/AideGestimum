@@ -36,7 +36,6 @@ public class Lancer implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		if (choix == ALL){
 			p.reloadFiles(principale.listerRepertoire(principale.getTopics()));
-			
 			th.start();
 			@SuppressWarnings("unused")
 			ProgressBar bar = new ProgressBar(p);

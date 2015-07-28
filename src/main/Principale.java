@@ -22,6 +22,7 @@ import actions.ColorationPuces;
 import actions.Copyright;
 import actions.CreationPuce;
 import actions.Lien;
+import actions.Majuscule;
 import actions.NettoyagePagePrincipale;
 import actions.NettoyageTitre;
 import actions.NoPP;
@@ -39,6 +40,7 @@ public class Principale extends Observable {
 	public static File FILE_BASE;
 
 	private Script script;
+	private AssociationAuto associationAuto;
 	private ArrayList<Action> scripts;
 
 	public File topics;
@@ -58,7 +60,9 @@ public class Principale extends Observable {
 			throw new NoRoboHelpProject("Ce dossier ne contient pas de projet RoboHelp");
 
 		script = new Script(files, this);
+		associationAuto = new AssociationAuto(files);
 		scripts = new ArrayList<Action>();
+		
 		initActions();
 
 		setChanged();
@@ -69,7 +73,6 @@ public class Principale extends Observable {
 		scripts.add(new Style(files));
 		scripts.add(new ChoixFeuilleStyle(files));
 		scripts.add(new ChoixPagePrincipale(files));
-		scripts.add(new AssociationAuto(files));
 		scripts.add(new ColorationPuces(files));
 		scripts.add(new ChangerStyle(files));
 		scripts.add(new Titre(files));
@@ -82,6 +85,7 @@ public class Principale extends Observable {
 		scripts.add(new Copyright(files));
 		scripts.add(new NoPP(files));
 		scripts.add(new SuppressionEspace(files));
+		scripts.add(new Majuscule(files));
 	}
 
 	private String getTopicsPath(){
@@ -224,5 +228,13 @@ public class Principale extends Observable {
 
 	public void setTopics(File topics) {
 		this.topics = topics;
+	}
+
+	public AssociationAuto getAssociationAuto() {
+		return associationAuto;
+	}
+
+	public void setAssociationAuto(AssociationAuto associationAuto) {
+		this.associationAuto = associationAuto;
 	}
 }

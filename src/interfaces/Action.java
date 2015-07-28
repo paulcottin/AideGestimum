@@ -18,7 +18,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import actions.AssociationAuto;
 import actions.ColorationPuces;
 import actions.NoPP;
 import exceptions.ParametrageError;
@@ -47,14 +46,7 @@ public abstract class Action extends Observable implements LancerAction{
 		htmlFiles = new ArrayList<File>();
 		cssFiles = new ArrayList<File>();
 		ppFiles = new ArrayList<File>();
-		for (File file : files) {
-			if (file.getAbsolutePath().endsWith(".htm"))
-				htmlFiles.add(file);
-			else if (file.getAbsolutePath().endsWith(".css"))
-				cssFiles.add(file);
-			else if (file.getAbsolutePath().endsWith(".htt"))
-				ppFiles.add(file);
-		}
+		reloadFiles(files);
 
 		this.running = false;
 		baliseASauver = new ArrayList<String>();
@@ -157,19 +149,6 @@ public abstract class Action extends Observable implements LancerAction{
 			}else
 				Principale.messageFin(messageFin);
 		}
-		else if (this instanceof AssociationAuto) {
-			ArrayList<String> list = ((AssociationAuto) this).getFichierNontrouve().getPages();
-			if (list.size() > 0) {
-				String msg = "Ces fichiers n'ont pas été trouvé !<br/><ul>";
-				for (String string : list) {
-					msg += "<li>"+string+"</li>";
-				}
-				msg += "</ul>";
-				((AssociationAuto) this).getFichierNontrouve().setMessage(msg);
-				((AssociationAuto) this).getFichierNontrouve().printMessage();
-			}else
-				Principale.messageFin(messageFin);
-		}
 		else
 			Principale.messageFin(messageFin);
 	}
@@ -266,7 +245,17 @@ public abstract class Action extends Observable implements LancerAction{
 	public abstract void parametrer() throws ParametrageError;
 
 	public void reloadFiles(ArrayList<File> files){
-		
+		htmlFiles.clear();
+		cssFiles.clear();
+		ppFiles.clear();
+		for (File file : files) {
+			if (file.getAbsolutePath().endsWith(".htm"))
+				htmlFiles.add(file);
+			else if (file.getAbsolutePath().endsWith(".css"))
+				cssFiles.add(file);
+			else if (file.getAbsolutePath().endsWith(".htt"))
+				ppFiles.add(file);
+		}
 	}
 
 	/**

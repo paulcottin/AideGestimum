@@ -25,8 +25,8 @@ public class Fenetre extends JFrame implements Observer{
 	private ArrayList<JLabel> labels;
 	private ArrayList<JButton> selects, alls;
 	
-	JLabel script;
-	JButton script_all;
+	JLabel script, assocAuto;
+	JButton script_all, assocAuto_all;
 	
 	ListeFichier listeFichier;
 	
@@ -57,6 +57,10 @@ public class Fenetre extends JFrame implements Observer{
 		script = new JLabel("Paramétrer un script");
 		script_all = new JButton("Paramétrer");
 		script_all.addActionListener(new ParametrerScript(principale.getScript()));
+		
+		assocAuto = new JLabel("Association automatique de page principales");
+		assocAuto_all = new JButton("Lancer");
+		assocAuto_all.addActionListener(new Lancer(principale.getAssociationAuto(), principale));
 	}
 	
 
@@ -82,7 +86,13 @@ public class Fenetre extends JFrame implements Observer{
 		JPanel scr = new JPanel();
 		scr.add(script);
 		scr.add(script_all);
+		
+		JPanel assoc = new JPanel();
+		assoc.add(assocAuto);
+		assoc.add(assocAuto_all);
+		
 		this.getContentPane().add(scr);
+		this.getContentPane().add(assoc);
 	}
 	
 	@Override

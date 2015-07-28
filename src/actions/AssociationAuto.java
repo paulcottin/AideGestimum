@@ -1,11 +1,19 @@
 package actions;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.file.FileSystemException;
 import java.util.ArrayList;
+import java.util.Observable;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -13,38 +21,81 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import exceptions.FichierNonTrouve;
-import exceptions.ParametrageError;
-import interfaces.Action;
+import exceptions.FichierUtilise;
+import interfaces.LancerAction;
+import interfaces.LongTask;
+import main.Principale;
 
-public class AssociationAuto extends Action {
+public class AssociationAuto extends Observable implements LancerAction, LongTask, Runnable{
 
 	File sourceFile;
 	ChoixPagePrincipale choixPP;
-	ArrayList<String> paths, PP;
-	FichierNonTrouve fichierNontrouve;
+	ArrayList<String> paths, PP, ppPath;
+	ArrayList<File> ppFiles;
+	boolean running;
+	FichierNonTrouve fichierNonTrouve;
 
 	public AssociationAuto(ArrayList<File> files) {
-		super(files);
 		choixPP = new ChoixPagePrincipale(files);
 		this.PP = new ArrayList<String>();
 		this.paths = new ArrayList<String>();
-		this.fichierNontrouve = new FichierNonTrouve();
-		messageFin = "Application automatique effectuée avec succès";
-		intitule = "Association automatique";
+		this.ppPath = new ArrayList<String>();
+		this.ppFiles = new ArrayList<File>();
+		this.running = false;
+		fichierNonTrouve = new FichierNonTrouve();
 	}
 
 	@Override
-	public void parametrer() throws ParametrageError{
-		try {
-			getSourceFile();
-			getPathAndPP();
-			displayPP();
-		} catch (ParametrageError e) {
-			throw e;
-		}
+	public void run() {
+		lancerActionAll();	
 	}
 
-	private void getSourceFile() throws ParametrageError {
+	@Override
+	public void lancerActionAll() {
+		getSourceFile();
+		if (sourceFile != null) {
+			try {
+				checkEncodage();
+				getPathAndPP();
+				if (displayPP()) {
+					applyStyle();
+					if (fichierNonTrouve.getPages().size() > 0) {
+						String msg = "Fichiers non trouvés : <br/><ul>";
+						for (String string : fichierNonTrouve.getPages()) {
+							msg += "<li>"+string+"</li>";
+						}
+						msg += "</ul>";
+						Principale.messageFin(msg);
+					}
+					else
+						Principale.messageFin("Application automatique effectuée avec succès");
+				}
+			} catch (FileSystemException e) {
+				new FichierUtilise(sourceFile.getName());
+			}
+		}
+		else
+			Principale.messageFin("Veuillez renseigner un fichier");
+		this.running = false;
+		update();
+	}
+
+	@Override
+	public void lancerAction(ArrayList<File> files) {
+
+	}
+
+	@Override
+	public void fichiersSelectionnes(ArrayList<File> files) {
+		lancerAction(files);
+	}
+
+	@Override
+	public void parametrer(){
+
+	}
+
+	private void getSourceFile() {
 		JOptionPane.showMessageDialog(null, "<html>Veuillez sélectionner le fichier csv (séparateur ';') contenant les liens<br/>"
 				+ "Ce fichier doit être sans en-tête, les chemins à gauche, les pages principales à droite</html>");
 		JFileChooser fileChooser = new JFileChooser();
@@ -52,7 +103,7 @@ public class AssociationAuto extends Action {
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
 			sourceFile = fileChooser.getSelectedFile();
 		else
-			throw new ParametrageError("Il faut sélectionner un fichier csv valide !");
+			sourceFile = null;
 	}
 
 	private void getPathAndPP(){		
@@ -71,7 +122,7 @@ public class AssociationAuto extends Action {
 		}
 	}
 
-	private boolean displayPP() throws ParametrageError{
+	private boolean displayPP(){
 		ArrayList<String> tmp = new ArrayList<String>();
 		//On récupère toutes les pages principales du fichier source
 		for (String string : PP) {
@@ -97,34 +148,81 @@ public class AssociationAuto extends Action {
 						null,
 						tab, tab[0]);
 
-				if (name == null)
-					throw new ParametrageError("Il faut faire la correspondance avec TOUTES les pages !");
 				updatePath(tmp.get(i), name);
 			}
 			return true;
 		}else {
-			throw new ParametrageError("Il faut d'abord définir au moins une page principale !");
+			Principale.messageFin("Il faut d'abord définir une page principale !");
+			return false;
 		}
 
 	}
 
-	@Override
-	protected Document applyStyle(Document doc) throws IOException {
+	private void applyStyle(){
+		this.running = true;
+		update();
 		for (int i = 0; i < PP.size(); i++) {
 			if (!PP.get(i).equals(0)) {
-				//on crée le doc de la pp
+				System.out.println(paths.get(i));
+				//on fixe la pp
 				choixPP.setPagePath(PP.get(i));
 				//On fixe les fichiers sur lesquels on applique le traitement
+				String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+				File tmp = new File(generateString(5, chars)+".jlb");
+				File file = new File(paths.get(i));
 				try {
-					Document d = Jsoup.parse(new File(paths.get(i)), "utf-8");
-					//On applique
-					choixPP.applyStyle(d);
-				} catch (FileNotFoundException e) {
-					fichierNontrouve.add(paths.get(i));
-				}
+					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8"));
+					String ligne = "", txt = "";
+
+					while ((ligne = br.readLine()) != null){
+						txt += ligne+"\r\n";
+					}
+
+					Document doc = Jsoup.parse(txt, "utf-8");
+					doc = choixPP.applyStyle(doc);
+					String html = doc.html();
+
+					//Décommente les balises RoboHelp, commentée automatiquement par
+					//la libraire JSoup.
+					html = html.replace("<!--?", "<?");
+					html = html.replace("?-->", "?>");
+
+					bw.write(html);
+					br.close();
+					bw.close();
+					Principale.fileMove(tmp, file);
+					tmp.delete();
+
+				} catch (IOException e) {
+					fichierNonTrouve.add(file.getAbsolutePath());
+				}				
 			}
 		}
-		return doc;
+	}
+
+	/**
+	 * Génère une chaîne de caractère pour le nom d'un fichier temporaire.
+	 * @param length : longueur de la chaine
+	 * @param chars : Chaîne de caractère servant de base à la génération.
+	 * @return
+	 */
+	private String generateString(int length, String chars) {
+		StringBuilder  pass = new StringBuilder (chars.length());
+		for (int x = 0; x < length; x++) {
+			int i = (int) (Math.random() * chars.length());
+			pass.append(chars.charAt(i));
+		}
+		return pass.toString();
+	}
+
+	@Override
+	public void reloadFiles(ArrayList<File> files) {
+		ppFiles.clear();
+		for (File file : files) {
+			if (file.getAbsolutePath().endsWith(".htt"))
+				ppFiles.add(file);
+		}
 	}
 
 	private void updatePath(String pageP, String name){
@@ -145,80 +243,90 @@ public class AssociationAuto extends Action {
 		return null;
 	}
 
-	/**
-	 * Plus besoin depuis qu'on sait lire avec un encodage précis un fichier
-	 * @return
-	 */
-//	private void checkEncodage() throws FileSystemException {
-//		BufferedReader br = null;
-//		File tmp = new File("tmp.csv");
-//		BufferedWriter bw = null;
-//		try {
-//			br = new BufferedReader(new FileReader(sourceFile));
-//			bw = new BufferedWriter(new FileWriter(tmp));
-//
-//			String ligne = "";
-//
-//			while ((ligne = br.readLine()) != null){
-//				if (ligne.contains("?") || ligne.contains("‚") || ligne.contains("…") || 
-//						ligne.contains("‡") || ligne.contains("ˆ") || ligne.contains("‰") || ligne.contains("Š")  || ligne.contains("—")
-//						|| ligne.contains("“")  || ligne.contains("–")  || ligne.contains("Œ")  || ligne.contains("‹")) {
-//					String l = ligne;
-//					if (ligne.contains("?"))
-//						l = l.replaceAll("\\?", "’");
-//					if (ligne.contains("‚"))
-//						l = l.replaceAll("‚", "é");
-//					if (ligne.contains("…"))
-//						l = l.replaceAll("…", "à");
-//					if (l.contains("‡"))
-//						l = l.replaceAll("‡", "ç");
-//					if (l.contains("ˆ"))
-//						l = l.replaceAll("ˆ", "ê");
-//					if (l.contains("‰"))
-//						l = l.replaceAll("‰", "ë");
-//					if (l.contains("Š"))
-//						l = l.replaceAll("Š", "è");
-//					if (l.contains("—"))
-//						l = l.replaceAll("—", "ù");
-//					if (l.contains("“"))
-//						l = l.replaceAll("“", "ô");
-//					if (l.contains("–"))
-//						l = l.replaceAll("–", "û");
-//					if (l.contains("Œ"))
-//						l = l.replaceAll("Œ", "î");
-//					if (l.contains("‹"))
-//						l = l.replaceAll("‹", "ï");
-//					if (l.contains("ƒ"))
-//						l = l.replaceAll("ƒ", "â");
-//					bw.write(l+"\r\n");
-//				}
-//				else
-//					bw.write(ligne+"\r\n");
-//			}
-//			bw.close();
-//			br.close();
-//		} catch (IOException e) {
-//			try {
-//				bw.close();
-//				br.close();
-//			} catch (IOException e1) {
-//				e1.printStackTrace();
-//			}
-//			e.printStackTrace();
-//
-//		}
-//		try {
-//			Principale.fileMove(tmp, sourceFile);
-//		} catch (FileSystemException fse){
-//			throw fse;
-//		}
-//	}
+	private void checkEncodage() throws FileSystemException {
+		BufferedReader br = null;
+		File tmp = new File("tmp.csv");
+		BufferedWriter bw = null;
+		try {
+			br = new BufferedReader(new FileReader(sourceFile));
+			bw = new BufferedWriter(new FileWriter(tmp));
 
-	public FichierNonTrouve getFichierNontrouve() {
-		return fichierNontrouve;
+			String ligne = "";
+
+			while ((ligne = br.readLine()) != null){
+				if (ligne.contains("?") || ligne.contains("‚") || ligne.contains("…") || 
+						ligne.contains("‡") || ligne.contains("ˆ") || ligne.contains("‰") || ligne.contains("Š")  || ligne.contains("—")
+						|| ligne.contains("“")  || ligne.contains("–")  || ligne.contains("Œ")  || ligne.contains("‹")) {
+					String l = ligne;
+					if (ligne.contains("?"))
+						l = l.replaceAll("\\?", "’");
+					if (ligne.contains("‚"))
+						l = l.replaceAll("‚", "é");
+					if (ligne.contains("…"))
+						l = l.replaceAll("…", "à");
+					if (l.contains("‡"))
+						l = l.replaceAll("‡", "ç");
+					if (l.contains("ˆ"))
+						l = l.replaceAll("ˆ", "ê");
+					if (l.contains("‰"))
+						l = l.replaceAll("‰", "ë");
+					if (l.contains("Š"))
+						l = l.replaceAll("Š", "è");
+					if (l.contains("—"))
+						l = l.replaceAll("—", "ù");
+					if (l.contains("“"))
+						l = l.replaceAll("“", "ô");
+					if (l.contains("–"))
+						l = l.replaceAll("–", "û");
+					if (l.contains("Œ"))
+						l = l.replaceAll("Œ", "î");
+					if (l.contains("‹"))
+						l = l.replaceAll("‹", "ï");
+					if (l.contains("ƒ"))
+						l = l.replaceAll("ƒ", "â");
+					if (l.contains("ø"))
+						l = l.replaceAll("ø", "°");
+					bw.write(l+"\r\n");
+				}
+				else
+					bw.write(ligne+"\r\n");
+			}
+			bw.close();
+			br.close();
+		} catch (IOException e) {
+			try {
+				bw.close();
+				br.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+
+		}
+		try {
+			Principale.fileMove(tmp, sourceFile);
+		} catch (FileSystemException fse){
+			throw fse;
+		}
 	}
 
-	public void setFichierNontrouve(FichierNonTrouve fichierNontrouve) {
-		this.fichierNontrouve = fichierNontrouve;
+	private void update(){
+		setChanged();
+		notifyObservers();
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	@Override
+	public void setRunning(boolean b) {
+		this.running = b;
+	}
+
+	@Override
+	public void onDispose() {
+		//Ne rien faire
 	}
 }
