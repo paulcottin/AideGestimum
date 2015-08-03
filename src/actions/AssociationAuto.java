@@ -34,6 +34,7 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 	ArrayList<File> ppFiles;
 	boolean running;
 	FichierNonTrouve fichierNonTrouve;
+	String fileProcessing;
 
 	public AssociationAuto(ArrayList<File> files) {
 		choixPP = new ChoixPagePrincipale(files);
@@ -164,6 +165,8 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 		for (int i = 0; i < PP.size(); i++) {
 			if (!PP.get(i).equals(0)) {
 				System.out.println(paths.get(i));
+				fileProcessing = paths.get(i);
+				update();
 				//on fixe la pp
 				choixPP.setPagePath(PP.get(i));
 				//On fixe les fichiers sur lesquels on applique le traitement
@@ -328,5 +331,11 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 	@Override
 	public void onDispose() {
 		//Ne rien faire
+	}
+
+	@Override
+	public String getFichierTraitement() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

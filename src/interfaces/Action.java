@@ -30,6 +30,7 @@ public abstract class Action extends Observable implements LancerAction{
 	protected String messageFin;
 	protected String intitule;
 	private ArrayList<String> baliseASauver;
+	private String fileProcessing;
 
 	/**
 	 * Contructeur de la classe.
@@ -104,7 +105,8 @@ public abstract class Action extends Observable implements LancerAction{
 		update();
 		for (File file : htmlFiles) {
 			synchronized (file) {
-				System.out.println(intitule+" : "+file.getName());
+				fileProcessing = file.getName();
+				update();
 				try {
 					applyStyleHelper(file);
 				} catch (NullPointerException e) {
@@ -412,12 +414,11 @@ public abstract class Action extends Observable implements LancerAction{
 	 * @return true si les balises ne sont pas trouvées, false sinon
 	 */
 	protected boolean isCleannable(Element element){
-		boolean clean = true;
 		for (Element e : element.getAllElements()) {
 			if (baliseASauver.contains(e.tag().toString()) && !e.equals(element))
-				clean = false;
+				return false;
 		}
-		return clean;
+		return true;
 	}
 
 	/**
@@ -442,6 +443,11 @@ public abstract class Action extends Observable implements LancerAction{
 				return file.getAbsolutePath();
 		}
 		return null;
+	}
+	
+	@Override
+	public String getFichierTraitement() {
+		return fileProcessing;
 	}
 
 	/**

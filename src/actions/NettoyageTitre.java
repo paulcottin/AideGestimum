@@ -22,7 +22,8 @@ public class NettoyageTitre extends Action {
 	protected Document applyStyle(Document doc) throws IOException {
 		Elements h = doc.select("h1");
 		for (Element element : h) {
-			if (element.text().matches("(.* |^.*)[a-z]+[A-Z][a-z]*.*")) {
+			//Si le titre et la première phrase sont collés
+			if (element.text().matches("(.* |^.*)[a-z]+[A-Z][a-z]*.*") && isCleannable(element)) {
 				String[] tab = separeTitre(element.text());
 				element.text(tab[0]);
 				element.after("<p>"+tab[1]+"</p>");

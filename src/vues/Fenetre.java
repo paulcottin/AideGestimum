@@ -25,8 +25,9 @@ public class Fenetre extends JFrame implements Observer{
 	private ArrayList<JLabel> labels;
 	private ArrayList<JButton> selects, alls;
 	
-	JLabel script, assocAuto;
-	JButton script_all, assocAuto_all;
+	JLabel script, assocAuto, rechercheImg;
+	JButton rechercheImg_l;
+	JButton script_all, assocAuto_all, rechercheImg_all;
 	
 	ListeFichier listeFichier;
 	
@@ -49,7 +50,7 @@ public class Fenetre extends JFrame implements Observer{
 	}
 	
 	private void initWin(){
-		this.setSize(500, 700);
+		this.setSize(500, 800);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setJMenuBar(new vues.MenuBar(principale));
@@ -61,6 +62,12 @@ public class Fenetre extends JFrame implements Observer{
 		assocAuto = new JLabel("Association automatique de page principales");
 		assocAuto_all = new JButton("Lancer");
 		assocAuto_all.addActionListener(new Lancer(principale.getAssociationAuto(), principale));
+		
+		rechercheImg = new JLabel("Recherche des chemins des images");
+		rechercheImg_l = new JButton("Sélection");
+		rechercheImg_l.addActionListener(new Lancer(principale.getRechercheImage(), principale, Lancer.SELECTED_LINES));
+		rechercheImg_all = new JButton("Tous");
+		rechercheImg_all.addActionListener(new Lancer(principale.getRechercheImage(), principale));
 	}
 	
 
@@ -91,8 +98,14 @@ public class Fenetre extends JFrame implements Observer{
 		assoc.add(assocAuto);
 		assoc.add(assocAuto_all);
 		
+		JPanel rechImg = new JPanel();
+		rechImg.add(rechercheImg);
+		rechImg.add(rechercheImg_l);
+		rechImg.add(rechercheImg_all);
+		
 		this.getContentPane().add(scr);
 		this.getContentPane().add(assoc);
+		this.getContentPane().add(rechImg);
 	}
 	
 	@Override

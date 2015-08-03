@@ -5,7 +5,9 @@ import interfaces.LongTask;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 /**
@@ -23,17 +25,24 @@ public class ProgressBar extends JFrame implements Observer{
 	private JProgressBar bar;
 	private LongTask task;
 	private boolean firstTime;
+	private JLabel fichierEnCours;
+	private String fichier;
 
 	public ProgressBar(LongTask task) {
 		super("Modification en cours...");
 		this.task = task;
 		((Observable) this.task).addObserver(this);
-		this.setSize(300, 50);
+		this.setSize(550, 70);
 		this.setLocationRelativeTo(null);
 		this.firstTime = true;
+		this.fichier = "";
+		this.fichierEnCours = new JLabel("Traitement de "+fichier+"...");
+		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
+		this.getContentPane().add(fichierEnCours);
 		bar = new JProgressBar();
 		this.add(bar);
 		bar.setIndeterminate(true);
+		this.getContentPane().add(bar);
 	}
 
 	@Override
@@ -46,5 +55,7 @@ public class ProgressBar extends JFrame implements Observer{
 			this.dispose();
 		}else 
 			this.setVisible(true);
+		fichier = task.getFichierTraitement();
+		fichierEnCours.setText("Traitement de "+fichier+"...");
 	}
 }

@@ -26,6 +26,7 @@ import actions.Majuscule;
 import actions.NettoyagePagePrincipale;
 import actions.NettoyageTitre;
 import actions.NoPP;
+import actions.RechercheImage;
 import actions.Style;
 import actions.SupprStyleTitre;
 import actions.SuppressionEspace;
@@ -41,6 +42,7 @@ public class Principale extends Observable {
 
 	private Script script;
 	private AssociationAuto associationAuto;
+	private RechercheImage rechercheImage;
 	private ArrayList<Action> scripts;
 
 	public File topics;
@@ -61,6 +63,7 @@ public class Principale extends Observable {
 
 		script = new Script(files, this);
 		associationAuto = new AssociationAuto(files);
+		rechercheImage = new RechercheImage(files, topics.getAbsolutePath());
 		scripts = new ArrayList<Action>();
 		
 		initActions();
@@ -236,5 +239,13 @@ public class Principale extends Observable {
 
 	public void setAssociationAuto(AssociationAuto associationAuto) {
 		this.associationAuto = associationAuto;
+	}
+
+	public RechercheImage getRechercheImage() {
+		return rechercheImage;
+	}
+
+	public void setRechercheImage(RechercheImage rechercheImage) {
+		this.rechercheImage = rechercheImage;
 	}
 }

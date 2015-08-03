@@ -9,18 +9,17 @@ import java.util.Observable;
 import javax.swing.JOptionPane;
 
 import interfaces.Action;
-import interfaces.LongTask;
 import interfaces.NeedSelectionFichiers;
 import vues.ChoixFichiers;
 import vues.ScriptChooser;
 
-public class Script extends Observable implements NeedSelectionFichiers, LongTask{
+public class Script extends Observable implements NeedSelectionFichiers{
 
 	private ArrayList<Action> actions;
 	private ArrayList<File> files, ppFiles, cssFiles;
 	private ScriptChooser scriptChooser;
-	private boolean running;
 	private Principale principale;
+	private boolean running;
 
 	public Script(ArrayList<File> files, Principale principale) {
 		this.actions = new ArrayList<Action>();
@@ -34,11 +33,14 @@ public class Script extends Observable implements NeedSelectionFichiers, LongTas
 				cssFiles.add(file);
 			this.files.add(file);
 		}
-		this.running = false;
 		this.principale = principale;
+		this.running = false;
 	}
 
 	public void runActions(){
+		running = true;
+		setChanged();
+		notifyObservers();
 		for (Action lancerAction : actions) {
 			lancerAction.fichiersSelectionnes(files);
 //			th = new Thread(lancerAction);
@@ -46,6 +48,9 @@ public class Script extends Observable implements NeedSelectionFichiers, LongTas
 //			new ProgressBar(lancerAction);
 			lancerAction.run();		
 		}
+		running = false;
+		setChanged();
+		notifyObservers();
 	}
 	
 	@Override
@@ -128,21 +133,6 @@ public class Script extends Observable implements NeedSelectionFichiers, LongTas
 		this.files = files;
 	}
 
-	@Override
-	public boolean isRunning() {
-		return running;
-	}
-
-	@Override
-	public void setRunning(boolean b) {
-		this.running = b;
-	}
-
-	@Override
-	public void onDispose() {
-		// Ne rien faire
-	}
-
 	public Principale getPrincipale() {
 		return principale;
 	}
@@ -151,4 +141,23 @@ public class Script extends Observable implements NeedSelectionFichiers, LongTas
 		this.principale = principale;
 	}
 
+	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	@Override
+	public void setRunning(boolean b) {
+		running = b;
+	}
+
+	@Override
+	public void onDispose() {
+		// Ne rien faire
+	}
+
+	@Override
+	public String getFichierTraitement() {
+		return actions.get(0).getFichierTraitement();
+	}
 }
