@@ -8,8 +8,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import controleurs.AfficheAide;
+import controleurs.ExportTaille;
 import controleurs.ExporterCSV;
 import controleurs.ModifierNomFichiers;
+import controleurs.NoHelp;
 import controleurs.Quitter;
 import main.Principale;
 
@@ -29,7 +31,7 @@ public class MenuBar extends JMenuBar implements Observer{
 	private Principale p;
 
 	private JMenu fichier, actions, aide;
-	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS, voirAide;
+	private JMenuItem quitter, enregistrer, modifNomFichiers, rechercheCSS, voirAide, exportTaille, noHelp;
 	
 	public MenuBar(Principale p) {
 		super();
@@ -44,8 +46,10 @@ public class MenuBar extends JMenuBar implements Observer{
 		quitter = new JMenuItem("Quitter");
 		quitter.addActionListener(new Quitter());
 		
-		enregistrer = new JMenuItem("Exporter la liste des fichiers");
+		enregistrer = new JMenuItem("Exporter la liste des fichiers du projet RoboHelp");
 		enregistrer.addActionListener(new ExporterCSV(p));
+		exportTaille = new JMenuItem("Exporter la totalité des fichiers avec leurs tailles");
+		exportTaille.addActionListener(new ExportTaille(p.getFiles()));
 		
 		actions = new JMenu("Actions");
 		modifNomFichiers = new JMenuItem("Modifier les noms de fichiers/dossiers");
@@ -54,6 +58,9 @@ public class MenuBar extends JMenuBar implements Observer{
 		rechercheCSS = new JMenuItem("Recherche d'un CSS en fonction d'un nom de classe");
 		rechercheCSS.addActionListener(new controleurs.SearchCSS(p.getFiles()));
 		
+		noHelp = new JMenuItem("Check des fenêtres qui n'ont pas de page d'aide");
+		noHelp.addActionListener(new NoHelp());
+		
 		aide = new JMenu("?");
 		voirAide = new JMenuItem("Aide");
 		voirAide.addActionListener(new AfficheAide());
@@ -61,11 +68,13 @@ public class MenuBar extends JMenuBar implements Observer{
 	
 	private void construct(){
 		fichier.add(enregistrer);
+		fichier.add(exportTaille);
 		fichier.addSeparator();
 		fichier.add(quitter);
 		
 		actions.add(modifNomFichiers);
 		actions.add(rechercheCSS);
+		actions.add(noHelp);
 		
 		aide.add(voirAide);
 		
