@@ -34,6 +34,7 @@ import actions.SupprimerTitre;
 import actions.Titre;
 import exceptions.NoRoboHelpProject;
 import interfaces.Action;
+import utilitaires.Utils;
 import vues.Fenetre;
 
 public class Principale extends Observable {
@@ -48,13 +49,11 @@ public class Principale extends Observable {
 	public File topics;
 	public ArrayList<File> files;
 
+	private Utils utils;
 
 	public Principale() throws NoRoboHelpProject{
 		files = new ArrayList<File>();
 		topics = new File(getTopicsPath());
-
-//		topics = new File("C:\\Users\\paul-cot\\Desktop\\GestimumCompta - Copie");
-//		topics = new File("\\\\SRVSI\\6-Developpement\\Versions\\ERP\\5\\Test\\Aide\\2015\\Gestimum gesco - Copie");
 
 		files = listerRepertoire(topics);
 		
@@ -65,6 +64,7 @@ public class Principale extends Observable {
 		associationAuto = new AssociationAuto(files);
 		rechercheImage = new RechercheImage(files, topics.getAbsolutePath());
 		scripts = new ArrayList<Action>();
+		utils = new Utils();
 		
 		initActions();
 
@@ -133,13 +133,7 @@ public class Principale extends Observable {
 	}
 
 	public void exportCSV() throws IOException{
-		File f;
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setApproveButtonText("Enregistrer");
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			f = fileChooser.getSelectedFile();
-		}else
-			f = null;
+		File f = utils.chooseSaveFile();
 
 		if (f != null) {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));

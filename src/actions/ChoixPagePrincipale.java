@@ -31,26 +31,25 @@ public class ChoixPagePrincipale extends Action {
 		Elements pp = doc.select("[name=template]");
 		String html = doc.html();
 		boolean isHeader = false, isFooter = false, isPP = false;
-		if (html.contains("placeholder type=\"header\""))
-			isHeader = true;
-		if (html.contains("placeholder type=\"footer\""))
-			isFooter = true;
-		if (pp.size() > 0)
-			isPP = true;
+		isHeader = html.contains("placeholder type=\"header\"");
+		isFooter = html.contains("placeholder type=\"footer\"");
+		isPP = pp.size() > 0;
 		if (isPP)
 			pp.first().attr("content", pagePath);
 		else {
 			Elements meta = doc.select("meta");
 			int index = meta.size();
-			Element e = meta.first().clone();
-			for (Attribute a: e.attributes()) {
-				e.removeAttr(a.getKey());
+			if (index > 0) {
+				Element e = meta.first().clone();
+				for (Attribute a: e.attributes()) {
+					e.removeAttr(a.getKey());
+				}
+				e.attr("name", "template");
+				e.attr("content", pagePath);
+				Elements head = doc.select("head");
+				Elements list = new Elements(e);
+				head.first().insertChildren(index, list);
 			}
-			e.attr("name", "template");
-			e.attr("content", pagePath);
-			Elements head = doc.select("head");
-			Elements list = new Elements(e);
-			head.first().insertChildren(index, list);
 		}
 		if (!isFooter)
 			doc.select("body").append("<!--?rh-placeholder type=\"footer\" ?--> ");

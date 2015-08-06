@@ -21,13 +21,13 @@ public class Style extends Action {
 		mot = "";
 		style = "";
 		intitule = "Application d'un style à un mot";
-		messageFin = "Le style \""+style+"\" a bien été appliqué sur le mot \""+mot+"\""; 
 	}
 	
 	@Override
 	public void parametrer() throws ParametrageError{
 		getMot();
 		style = cssClass(cssFile("Donner un style à un mot", "Quel style ?"), "Donner un style à un mot", "Quelle feuille de style");
+		messageFin = "Le style \""+style+"\" a bien été appliqué sur le mot \""+mot+"\""; 
 	}
 	
 	@Override

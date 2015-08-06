@@ -100,6 +100,8 @@ public abstract class Action extends Observable implements LancerAction{
 	 */
 	@Override
 	public void lancerActionAll() throws ParametrageError{
+		if (cssFiles.size() == 0)
+			throw new ParametrageError("Aucune fiche CSS définie !");
 		parametrer();
 		running = true;
 		update();
@@ -110,7 +112,7 @@ public abstract class Action extends Observable implements LancerAction{
 				try {
 					applyStyleHelper(file);
 				} catch (NullPointerException e) {
-					System.out.println("erreur : "+file.getAbsolutePath());
+					System.out.println("null pointer exc Action/LancerActionAll : "+file.getAbsolutePath());
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -118,25 +120,25 @@ public abstract class Action extends Observable implements LancerAction{
 			}
 		}
 		if (this instanceof ColorationPuces) {
-			ArrayList<String> list = ((ColorationPuces) this).getNoPPDefine().getPages();
-			if (list.size() > 0) {
+			ArrayList<String> list1 = ((ColorationPuces) this).getNoPPDefine().getPages();
+			if (list1.size() > 0) {
 				String msg = "Ces pages n'ont pas de page principale.<br/>Coloration des puces impossible !<br/><ul>";
-				for (String string : list) {
+				for (String string : list1) {
 					msg += "<li>"+string+"</li>";
 				}
 				msg += "</ul>";
 				Principale.messageFin(msg);
-			}else
-				Principale.messageFin(messageFin);
-			list = ((ColorationPuces) this).getNoCSSDefine().getPages();
-			if (list.size() > 0) {
+			}
+			ArrayList<String> list2 = ((ColorationPuces) this).getNoCSSDefine().getPages();
+			if (list2.size() > 0) {
 				String msg = "Ces pages ont des problème avec leur CSS<br/>Traitement du texte des puces impossible !<br/><ul>";
-				for (String string : list) {
+				for (String string : list2) {
 					msg += "<li>"+string+"</li>";
 				}
 				msg += "</ul>";
-				Principale.messageFin(msg);
-			}else
+				throw new ParametrageError(msg);
+			}
+			if (list1.size() == 0 && list2.size() == 0)
 				Principale.messageFin(messageFin);
 		}
 		else if (this instanceof NoPP) {
@@ -147,7 +149,7 @@ public abstract class Action extends Observable implements LancerAction{
 					msg += "<li>"+string+"</li>";
 				}
 				msg += "</ul>";
-				Principale.messageFin(msg);
+				throw new ParametrageError(msg);
 			}else
 				Principale.messageFin(messageFin);
 		}
@@ -483,8 +485,13 @@ public abstract class Action extends Observable implements LancerAction{
 
 
 	@Override
-	public void onDispose() {
+	public void onProgressBarDispose() {
 		//Ne rien faire
+	}
+	
+	@Override
+	public String getTitre() {
+		return intitule;
 	}
 
 	/**

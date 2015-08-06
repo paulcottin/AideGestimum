@@ -23,7 +23,6 @@ public class ChoixFeuilleStyle extends Action {
 
 	@Override
 	protected Document applyStyle(Document doc) throws IOException {
-		// TODO Auto-generated method stub
 		Elements style = doc.select("link[rel=StyleSheet]");
 			for (Element element : style) {
 				element.attr("href", stylePath);
@@ -33,7 +32,6 @@ public class ChoixFeuilleStyle extends Action {
 
 	@Override
 	public void parametrer() throws ParametrageError {
-		// TODO Auto-generated method stub
 		stylePath = cssFile("Paramétrage", "Quelle feuille de style").getAbsolutePath();
 	}
 }

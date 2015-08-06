@@ -29,7 +29,7 @@ public class ProgressBar extends JFrame implements Observer{
 	private String fichier;
 
 	public ProgressBar(LongTask task) {
-		super("Modification en cours...");
+		super("("+task.getTitre()+") Modification en cours...");
 		this.task = task;
 		((Observable) this.task).addObserver(this);
 		this.setSize(550, 70);
@@ -50,12 +50,12 @@ public class ProgressBar extends JFrame implements Observer{
 		if (!task.isRunning()) {
 			if (firstTime) {
 				firstTime = false;
-				task.onDispose();
+				task.onProgressBarDispose();
 			}
 			this.dispose();
 		}else 
 			this.setVisible(true);
 		fichier = task.getFichierTraitement();
 		fichierEnCours.setText("Traitement de "+fichier+"...");
-	}
+		this.setTitle("("+task.getTitre()+") Modification en cours...");	}
 }

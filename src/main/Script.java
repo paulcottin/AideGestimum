@@ -5,21 +5,25 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JOptionPane;
 
 import interfaces.Action;
 import interfaces.NeedSelectionFichiers;
 import vues.ChoixFichiers;
+import vues.ProgressBar;
 import vues.ScriptChooser;
 
-public class Script extends Observable implements NeedSelectionFichiers{
+public class Script extends Observable implements NeedSelectionFichiers, Observer{
 
 	private ArrayList<Action> actions;
 	private ArrayList<File> files, ppFiles, cssFiles;
 	private ScriptChooser scriptChooser;
 	private Principale principale;
 	private boolean running;
+	private int index;
+	private String fichierEnCours, actionEnCours;
 
 	public Script(ArrayList<File> files, Principale principale) {
 		this.actions = new ArrayList<Action>();
@@ -35,27 +39,39 @@ public class Script extends Observable implements NeedSelectionFichiers{
 		}
 		this.principale = principale;
 		this.running = false;
+		this.index = 0;
+		this.fichierEnCours = "";
+		this.actionEnCours = "";
+	}
+	
+	public void initParam() {
+		running= false;
+		index = 0;
+		fichierEnCours = "";
+		actions.clear();
+		actionEnCours = "";
 	}
 
 	public void runActions(){
 		running = true;
 		setChanged();
 		notifyObservers();
+		
 		for (Action lancerAction : actions) {
 			lancerAction.fichiersSelectionnes(files);
-//			th = new Thread(lancerAction);
-//			th.start();
-//			new ProgressBar(lancerAction);
-			lancerAction.run();		
+			lancerAction.run();
+			index++;
 		}
 		running = false;
 		setChanged();
 		notifyObservers();
+		
 	}
 	
 	@Override
 	public void run(){
-		//Ne fait rien
+		runActions();
+		Principale.messageFin("Script terminé");
 	}
 
 	@Override
@@ -114,7 +130,14 @@ public class Script extends Observable implements NeedSelectionFichiers{
 				}
 			}
 		}
-		runActions();
+		for (Action action : actions) {
+			action.addObserver(this);
+		}
+		Thread th = new Thread(this);
+		th.start();
+		new ProgressBar(this);
+		setChanged();
+		notifyObservers();
 	}
 
 	public ArrayList<Action> getActions() {
@@ -152,12 +175,25 @@ public class Script extends Observable implements NeedSelectionFichiers{
 	}
 
 	@Override
-	public void onDispose() {
-		// Ne rien faire
+	public void onProgressBarDispose() {
+		//Ne rien faire
 	}
 
 	@Override
 	public String getFichierTraitement() {
-		return actions.get(0).getFichierTraitement();
+		return fichierEnCours;
+	}
+	
+	@Override
+	public String getTitre() {
+		return actionEnCours;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		fichierEnCours = actions.get(index).getFichierTraitement();
+		actionEnCours= actions.get(index).getTitre();
+		setChanged();
+		notifyObservers();
 	}
 }

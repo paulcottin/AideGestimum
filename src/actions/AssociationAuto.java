@@ -22,6 +22,7 @@ import org.jsoup.nodes.Document;
 
 import exceptions.FichierNonTrouve;
 import exceptions.FichierUtilise;
+import exceptions.ParametrageError;
 import interfaces.LancerAction;
 import interfaces.LongTask;
 import main.Principale;
@@ -48,11 +49,15 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 
 	@Override
 	public void run() {
-		lancerActionAll();	
+		try {
+			lancerActionAll();
+		} catch (ParametrageError e) {
+			e.printMessage();
+		}	
 	}
 
 	@Override
-	public void lancerActionAll() {
+	public void lancerActionAll() throws ParametrageError {
 		getSourceFile();
 		if (sourceFile != null) {
 			try {
@@ -114,8 +119,10 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 
 			while ((ligne = br.readLine()) != null) {
 				String[] tab = ligne.split(";");
-				paths.add(tab[0]);
-				PP.add(tab[tab.length-1]);
+				if (!tab[tab.length-1].equals("0")) {
+					paths.add(tab[0]);
+					PP.add(tab[tab.length-1]);
+				}
 			}
 			br.close();
 		} catch (IOException e) {
@@ -123,7 +130,7 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 		}
 	}
 
-	private boolean displayPP(){
+	private boolean displayPP() throws ParametrageError{
 		ArrayList<String> tmp = new ArrayList<String>();
 		//On récupère toutes les pages principales du fichier source
 		for (String string : PP) {
@@ -148,6 +155,8 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 						JOptionPane.QUESTION_MESSAGE,
 						null,
 						tab, tab[0]);
+				if (name == null)
+					throw new ParametrageError("Il faut faire correspondre toutes les pages principales");
 
 				updatePath(tmp.get(i), name);
 			}
@@ -164,7 +173,6 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 		update();
 		for (int i = 0; i < PP.size(); i++) {
 			if (!PP.get(i).equals(0)) {
-				System.out.println(paths.get(i));
 				fileProcessing = paths.get(i);
 				update();
 				//on fixe la pp
@@ -329,13 +337,19 @@ public class AssociationAuto extends Observable implements LancerAction, LongTas
 	}
 
 	@Override
-	public void onDispose() {
+	public void onProgressBarDispose() {
 		//Ne rien faire
 	}
 
 	@Override
 	public String getFichierTraitement() {
-		// TODO Auto-generated method stub
-		return null;
+		return fileProcessing;
 	}
+	
+	@Override
+	public String getTitre() {
+		return "Association automatique des pages principales";
+	}
+	
+	
 }

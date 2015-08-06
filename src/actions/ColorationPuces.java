@@ -28,6 +28,7 @@ public class ColorationPuces extends Action {
 	NoCSSDefine noCSSDefine;
 	boolean isOrange;
 	String couleurTexte;
+	String puceClasse;
 
 	public ColorationPuces(ArrayList<File> files) {
 		super(files);
@@ -40,14 +41,14 @@ public class ColorationPuces extends Action {
 
 	@Override
 	public void parametrer() throws ParametrageError {	
-		String[] couleur = {"Orange", "Thématique"};
+		String[] couleur = {"Classe CSS", "Thématique"};
 		String nom = (String)JOptionPane.showInputDialog(null, "Choisissez la couleur:", "Choisir la couleur des puces", JOptionPane.QUESTION_MESSAGE,  null, couleur, couleur[0]);
 		if (nom != null) {
-			if (nom.equals("Orange")) 
-				isOrange = true;
-			else
-				isOrange = false;				
-		}else
+			isOrange = nom.equals("Classe CSS");
+			puceClasse = cssClass(cssFile("Paramétrage de la coloration des puces", "Quelle feuille de style ?"), "Paramétrage de la"
+					+ "coloration des puces", "Quelle classe CSS ?");
+		}
+		else
 			throw new ParametrageError("Il faut sélectionner une couleur !");
 	}
 
@@ -75,13 +76,15 @@ public class ColorationPuces extends Action {
 	}
 
 	private Document applyOrange(Document doc) throws IOException, NullPointerException {
-		String couleur = "#ee6d0c";
 		Elements puces = doc.select("li");
 		for (Element element : puces) {
 			for (Attribute a : element.attributes()) {
 				element.removeAttr(a.getKey());
 			}
-			element.attr("style", "color: "+couleur);
+			for (String string : element.classNames()) {
+				element.removeClass(string);
+			}
+			element.addClass(puceClasse);
 			if (isCleannable(element)) {
 				element.html("<p style=\"color: "+couleurTexte+";\">"+element.text()+"</p>");
 			}

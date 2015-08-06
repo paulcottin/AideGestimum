@@ -56,7 +56,7 @@ public class SupprStyleTitre extends Action{
 	private Document supprImgTitre(Document doc){
 		Elements titre = doc.select("h1");
 		for (Element element : titre) {
-			if (element.text().equals("")  && !isCleannable(element)) {
+			if (element.text().equals("")  && !isCleannable(element) && element.html().contains("<img")) {
 				String txt = element.html().substring(element.html().indexOf("<img"));
 				element.tagName("img");
 				element.attr("src", supprImgTitreHelper(txt, "src"));
@@ -99,7 +99,7 @@ public class SupprStyleTitre extends Action{
 		for (int i = 1; i < 6; i++) {
 			Elements titre = doc.select("h"+i);
 			for (Element element : titre) {
-				if (!element.previousSibling().outerHtml().contains("rh-list_start")) { 
+				if (element.previousSibling() != null && !element.previousSibling().outerHtml().contains("rh-list_start")) { 
 					element.prepend("<?rh-list_start level=\""+i+"\" an=\""+i+"\" class=\"rl-H"+i+"\" style=\"list-style: rh-list;"
 							+ "list-style: rh-list;\" ?>");
 					element.append("<?rh-list_end ?>");

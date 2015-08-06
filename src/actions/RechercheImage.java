@@ -118,14 +118,13 @@ public class RechercheImage extends Observable implements LancerAction, LongTask
 	private Document applyStyle(Document doc){
 		Elements imgs = doc.select("img");
 		for (Element element : imgs) {
-			String path = getAbsoluteImgFilePath(element.attr("src"));
-			System.out.println("result : "+path);
+			String path = getRelativeImgFilePath(element.attr("src"));
 			element.attr("src", path);
 		}
 		return doc;
 	}
 
-	private String getAbsoluteImgFilePath(String imgName){
+	private String getRelativeImgFilePath(String imgName){
 		String nom = "";
 		//Si on a un chemin
 		if (imgName.contains("\\")) {
@@ -156,9 +155,15 @@ public class RechercheImage extends Observable implements LancerAction, LongTask
 						s += relativePath.split("\\\\")[i]+"/";
 					return s+nom;
 				}
-				//Si l'image est dans le même dossier que le fichier
-				else if (nbFolderFile == nbFolderImg)
-					return nom;
+				//Si l'image est dans le même étage de dossier que le fichier, on remonte du nombre et on redescend du même nombre
+				else if (nbFolderFile == nbFolderImg) {
+					String s = "";
+					for (int i = 0; i < nbFolderFile; i++)
+						s += "../";		
+					for (int i = 0; i < nbFolderImg; i++)
+						s += relativePath.split("\\\\")[i]+"/";
+					return s+nom;
+				}
 				//si l'image est dans un sous-dossier de celui du fichier
 				else {
 					String s = "";
@@ -202,12 +207,17 @@ public class RechercheImage extends Observable implements LancerAction, LongTask
 	}
 
 	@Override
-	public void onDispose() {
+	public void onProgressBarDispose() {
 		
 	}
 	
 	@Override
 	public String getFichierTraitement() {
 		return fileProcessing;
+	}
+	
+	@Override
+	public String getTitre() {
+		return "Recherce des chemins des images";
 	}
 }

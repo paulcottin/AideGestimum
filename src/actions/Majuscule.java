@@ -27,18 +27,21 @@ public class Majuscule extends Action {
 			titres.addAll(doc.select("h"+i));
 		}
 		for (Element element : titres) {
-			element.text(metEnMajuscule(element.text()));
+			if (isCleannable(element))
+				element.text(metEnMajuscule(element.text()));
 		}
 		
 		//Gestion des puces
 		Elements puces = doc.select("li");
 		for (Element element : puces) {
-			element.text(metEnMajuscule(element.text()));
+			if (isCleannable(element))
+				element.text(metEnMajuscule(element.text()));
 		}
 		//Gestion du texte
 		Elements txts = doc.select("p");
 		for (Element element : txts) {
-			element.text(metEnMajuscule(element.text()));
+			if (isCleannable(element))
+				element.text(metEnMajuscule(element.text()));
 		}
 		return doc;
 	}

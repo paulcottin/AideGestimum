@@ -21,9 +21,13 @@ public class SuppressionEspace extends Action{
 	@Override
 	protected Document applyStyle(Document doc) throws IOException {
 		for (Element element: doc.getAllElements()) {
+			//Si il y a un espace "non-breakable"
 			if (element.html().contains("&nbsp;")) {
 				element.html(element.html().replace("&nbsp;", ""));
 			}
+			//Si il y a une balise p vide
+			else if (element.tagName().equals("p") && element.text().equals("") && isCleannable(element))
+				element.remove();
 		}
 		return doc;
 	}

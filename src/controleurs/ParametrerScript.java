@@ -15,6 +15,7 @@ public class ParametrerScript implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		s.initParam();
 		s.choisirFichiers();
 	}
 
